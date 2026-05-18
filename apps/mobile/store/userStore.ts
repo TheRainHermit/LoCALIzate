@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import { zustandStorage } from './storage';
 
 interface UserStore {
   userInterests: string[];
@@ -7,9 +9,18 @@ interface UserStore {
   setUserLocation: (location: { lat: number; lng: number } | null) => void;
 }
 
-export const useUserStore = create<UserStore>(set => ({
-  userInterests: [],
-  setUserInterests: (interests) => set({ userInterests: interests }),
-  userLocation: null,
-  setUserLocation: (location) => set({ userLocation: location }),
-}));
+export const useUserStore = create<UserStore>()(
+  persist(
+    (set) => ({
+      userInterests: [],
+      setUserInterests: (interests: string[]) => set({ userInterests: interests }),
+      userLocation: null,
+      setUserLocation: (location: { lat: number; lng: number } | null) =>
+        set({ userLocation: location }),
+    }),
+    {
+      name: 'user-storage',
+      storage: createJSONStorage(() => zustandStorage),
+    }
+  )
+);

@@ -1,53 +1,54 @@
 /**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
+ * Theme configuration - LoCALIzate
  */
 
 import { Platform } from 'react-native';
+import { Colors, Typography, Spacing, BorderRadius } from './designTokens';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+export const useTheme = () => ({
+  colors: Colors,
+  typography: Typography,
+  spacing: Spacing,
+  borderRadius: BorderRadius,
+});
 
-export const Colors = {
-  light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
-  },
-  dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
-  },
-};
-
+// Para compatibilidad con código existente
 export const Fonts = Platform.select({
   ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
-    sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
+    sans: 'Plus Jakarta Sans',
     serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
     rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
     mono: 'ui-monospace',
   },
   default: {
-    sans: 'normal',
+    sans: 'Plus Jakarta Sans',
     serif: 'serif',
-    rounded: 'normal',
+    rounded: 'Plus Jakarta Sans',
     mono: 'monospace',
   },
   web: {
-    sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+    sans: "'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
     serif: "Georgia, 'Times New Roman', serif",
-    rounded: "'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif",
-    mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+    rounded: "'Plus Jakarta Sans', 'SF Pro Rounded', sans-serif",
+    mono: "'Courier New', monospace",
   },
 });
+
+export const LegacyColors = {
+  light: {
+    text: Colors.onBackground,
+    background: Colors.background,
+    tint: Colors.primary,
+    icon: Colors.onSurfaceVariant,
+    tabIconDefault: Colors.onSurfaceVariant,
+    tabIconSelected: Colors.primary,
+  },
+  dark: {
+    text: Colors.surface,
+    background: Colors.inverseSurface,
+    tint: Colors.inversePrimary,
+    icon: Colors.onSurfaceVariant,
+    tabIconDefault: Colors.onSurfaceVariant,
+    tabIconSelected: Colors.inversePrimary,
+  },
+};

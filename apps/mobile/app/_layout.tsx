@@ -1,24 +1,36 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { useEffect } from 'react';
 import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+import { useOnboardingStore } from '@/store/onboardingStore';
+import { Colors } from '@/constants';
+import * as Font from 'expo-font';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  useEffect(() => {
+    Font.loadAsync({
+      'Plus Jakarta Sans': require('../assets/fonts/PlusJakartaSans-Regular.ttf'),
+      'Be Vietnam Pro': require('../assets/fonts/BeVietnamPro-Regular.ttf'),
+    });
+  }, []);
+
+  const hasCompletedOnboarding = useOnboardingStore(state => state.hasCompletedOnboarding);
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        cardStyle: {
+          backgroundColor: Colors.surface,
+        },
+      }}
+    >
+      {!hasCompletedOnboarding ? (
+        <Stack.Screen name="onboarding" options={{ animationEnabled: false }} />
+      ) : (
+        <Stack.Screen name="(tabs)" options={{ animationEnabled: false }} />
+      )}
+      <Stack.Screen name="lugar" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="routes" />
+      <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+    </Stack>
   );
 }
