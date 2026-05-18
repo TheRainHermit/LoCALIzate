@@ -1,39 +1,60 @@
 ---
-import MainLayout from '../layouts/MainLayout.astro';
+import Layout from '../layouts/Layout.astro';
+import NavBar from '../components/ui/NavBar.astro';
+import Footer from '../components/ui/Footer.astro';
 import Hero from '../components/Hero.astro';
 import Features from '../components/Features.astro';
+import Welcome from '../components/Welcome.astro';
 import EventsCarousel from '../components/EventsCarousel.astro';
 
-// Simulación de eventos (puedes conectar a tu API después)
 const eventos = [
   {
-    nombre: "Feria de Cali",
-    fecha_inicio: "2026-12-25",
-    imagen_principal: "https://upload.wikimedia.org/wikipedia/commons/6/6e/Feria_de_Cali.jpg",
-    descripcion_corta: "La fiesta más grande de la ciudad, llena de salsa y alegría.",
+    id: '1',
+    nombre: 'Festival de Salsa 2026',
+    fecha_inicio: '2026-06-15',
+    imagen_principal: 'https://via.placeholder.com/400x200?text=Festival+Salsa',
+    descripcion_corta: 'Vive la mejor música y danza caleña en el corazón de la ciudad.',
+    ubicacion: 'Parque Belalcázar',
   },
   {
-    nombre: "Festival Petronio Álvarez",
-    fecha_inicio: "2026-08-14",
-    imagen_principal: "https://upload.wikimedia.org/wikipedia/commons/2/2e/Petronio_Alvarez.jpg",
-    descripcion_corta: "El festival de música del Pacífico más importante de Colombia.",
+    id: '2',
+    nombre: 'Feria Gastronómica del Pacífico',
+    fecha_inicio: '2026-07-10',
+    imagen_principal: 'https://via.placeholder.com/400x200?text=Gastronomia',
+    descripcion_corta: 'Prueba los mejores platillos de la cocina caleña y del Pacífico.',
+    ubicacion: 'Centro Comercial',
   },
   {
-    nombre: "Colombia BirdFair",
-    fecha_inicio: "2026-02-15",
-    imagen_principal: "https://upload.wikimedia.org/wikipedia/commons/3/3a/Birdfair_Cali.jpg",
-    descripcion_corta: "El evento para los amantes de la naturaleza y la observación de aves.",
+    id: '3',
+    nombre: 'Concierto Artistas Locales',
+    fecha_inicio: '2026-08-05',
+    imagen_principal: 'https://via.placeholder.com/400x200?text=Concierto',
+    descripcion_corta: 'Apoya a los talentos musicales emergentes de Cali.',
+    ubicacion: 'Teatro Municipal',
   },
 ];
 ---
 
-<MainLayout>
-  <Hero 
-    title="¿Cómo puede la tecnología convertirse en el mejor guía de Cali?"
-    subtitle="Un asistente que reconoce lo que ves, entiende tus intereses y te habla como un verdadero caleño"
-  />
-  <Features />
-  <section id="eventos" class="mt-12">
-    <EventsCarousel eventos={eventos} />
-  </section>
-</MainLayout>
+<Layout title="LoCALIzate - Descubre Cali">
+  <NavBar />
+  
+  <main>
+    <Hero
+      title="CaliGuía: Tu Asistente Turístico Inteligente"
+      subtitle="Descubre los secretos, sabores y ritmos de Cali con experiencias personalizadas"
+    />
+
+    <Features />
+
+    <Welcome
+      title="Comienza tu aventura"
+      subtitle="Accede a mapas interactivos, guías de audio y recomendaciones personalizadas"
+      ctaText="Ir al Explorador"
+      ctaHref="/explorador"
+    />
+
+    <EventsCarousel {eventos} />
+  </main>
+
+  <Footer />
+</Layout>

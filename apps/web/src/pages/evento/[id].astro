@@ -1,0 +1,418 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import NavBar from '../../components/ui/NavBar.astro';
+import Footer from '../../components/ui/Footer.astro';
+import ThemedText from '../../components/ui/ThemedText.astro';
+import Card from '../../components/ui/Card.astro';
+import Button from '../../components/ui/Button.astro';
+import Badge from '../../components/ui/Badge.astro';
+
+const { id } = Astro.params;
+
+const evento = {
+  id: id || '1',
+  nombre: 'Festival de Salsa 2026',
+  descripcion_corta: 'El evento más esperado del año con presentaciones de orquestas.',
+  descripcion_completa:
+    'El Festival de Salsa 2026 es el evento musical más importante de Cali, reuniendo a los mejores exponentes de la salsa colombiana. Disfruta de 5 días de música en vivo, competencias de baile, talleres y experiencias gastronómicas únicas. Un evento que celebra la cultura y la pasión caleña.',
+  fecha_inicio: '2026-06-15',
+  fecha_fin: '2026-06-20',
+  ubicacion: 'Parque Belalcázar',
+  direccion: 'Carrera 15 # 8-50, Cali',
+  imagen: 'https://via.placeholder.com/800x400?text=Festival+Salsa',
+  imagenes: [
+    'https://via.placeholder.com/800x400?text=Festival+1',
+    'https://via.placeholder.com/800x400?text=Festival+2',
+    'https://via.placeholder.com/800x400?text=Festival+3',
+  ],
+  categoria: 'Música',
+  precio: 'Entrada libre',
+  horario: '6:00 PM - 2:00 AM',
+  asistentes_estimados: 5000,
+  organizador: 'Instituto Departamental de Cultura',
+  contacto: {
+    telefono: '+57 2 555 1234',
+    email: 'info@festivalsalsa.co',
+    web: 'www.festivalsalsa.co',
+  },
+  actividades: [
+    {
+      nombre: 'Conciertos en Vivo',
+      descripcion: 'Presentaciones de las mejores orquestas de salsa de Colombia',
+      hora: '7:00 PM',
+    },
+    {
+      nombre: 'Competencia de Baile',
+      descripcion: 'Batalla de parejas y grupos en distintas categorías',
+      hora: '9:00 PM',
+    },
+    {
+      nombre: 'Talleres de Salsa',
+      descripcion: 'Aprende pasos básicos con instructores profesionales',
+      hora: '5:00 PM',
+    },
+    {
+      nombre: 'Zona Gastronómica',
+      descripcion: 'Comida típica caleña y bebidas para disfrutar el evento',
+      hora: 'Todo el día',
+    },
+  ],
+};
+
+const formatDate = (date: string) => {
+  return new Date(date).toLocaleDateString('es-CO', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  });
+};
+---
+
+<Layout title={`${evento.nombre} - LoCALIzate`}>
+  <NavBar />
+
+  <main class="evento-detail">
+    <!-- Hero -->
+    <div class="evento-hero">
+      <img src={evento.imagen} alt={evento.nombre} />
+      <div class="evento-hero-overlay">
+        <div class="container">
+          <Badge color="secondary" class="evento-hero-badge">
+            {evento.categoria}
+          </Badge>
+          <ThemedText variant="headline-lg" class="evento-hero-title">
+            {evento.nombre}
+          </ThemedText>
+        </div>
+      </div>
+    </div>
+
+    <div class="container evento-detail-content py-xxl">
+      <!-- Grid: Info + Lateral -->
+      <div class="evento-grid">
+        <div class="evento-main">
+          <!-- Descripción -->
+          <Card variant="filled" padding="lg" class="mb-xl">
+            <ThemedText variant="body-md">
+              {evento.descripcion_completa}
+            </ThemedText>
+          </Card>
+
+          <!-- Actividades -->
+          <div class="mb-xl">
+            <ThemedText variant="headline-md" class="mb-lg">
+              Actividades Principales
+            </ThemedText>
+            <div class="actividades-list">
+              {
+                evento.actividades.map((actividad) => (
+                  <Card variant="outlined" padding="lg" class="actividad-card">
+                    <div class="actividad-header">
+                      <ThemedText variant="title-md">
+                        {actividad.nombre}
+                      </ThemedText>
+                      <ThemedText variant="label-lg" color="primary">
+                        {actividad.hora}
+                      </ThemedText>
+                    </div>
+                    <ThemedText variant="body-sm" color="muted" class="actividad-desc">
+                      {actividad.descripcion}
+                    </ThemedText>
+                  </Card>
+                ))
+              }
+            </div>
+          </div>
+
+          <!-- Galería -->
+          {
+            evento.imagenes && evento.imagenes.length > 0 && (
+              <div class="mb-xl">
+                <ThemedText variant="headline-md" class="mb-lg">
+                  Galería
+                </ThemedText>
+                <div class="galeria-grid">
+                  {evento.imagenes.map((img) => (
+                    <div class="galeria-item">
+                      <img src={img} alt={evento.nombre} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
+          }
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="evento-sidebar">
+          <!-- Fecha y Hora -->
+          <Card variant="elevated" padding="lg" class="sidebar-card">
+            <ThemedText variant="title-md" class="sidebar-title">
+              📅 Fecha y Hora
+            </ThemedText>
+            <div class="sidebar-content mt-md">
+              <ThemedText variant="body-sm">
+                <strong>Inicio:</strong> {formatDate(evento.fecha_inicio)}
+              </ThemedText>
+              <ThemedText variant="body-sm" class="mt-sm">
+                <strong>Fin:</strong> {formatDate(evento.fecha_fin)}
+              </ThemedText>
+              <ThemedText variant="body-sm" class="mt-sm">
+                <strong>Hora:</strong> {evento.horario}
+              </ThemedText>
+            </div>
+          </Card>
+
+          <!-- Ubicación -->
+          <Card variant="elevated" padding="lg" class="sidebar-card">
+            <ThemedText variant="title-md" class="sidebar-title">
+              📍 Ubicación
+            </ThemedText>
+            <div class="sidebar-content mt-md">
+              <ThemedText variant="body-sm">
+                {evento.ubicacion}
+              </ThemedText>
+              <ThemedText variant="label-sm" color="muted" class="mt-sm">
+                {evento.direccion}
+              </ThemedText>
+              <Button
+                label="Cómo llegar"
+                variant="text"
+                size="sm"
+                href="#"
+                class="mt-md"
+              />
+            </div>
+          </Card>
+
+          <!-- Entrada -->
+          <Card variant="elevated" padding="lg" class="sidebar-card">
+            <ThemedText variant="title-md" class="sidebar-title">
+              🎫 Entrada
+            </ThemedText>
+            <div class="sidebar-content mt-md">
+              <ThemedText variant="headline-md" color="primary">
+                {evento.precio}
+              </ThemedText>
+              <ThemedText variant="label-sm" color="muted" class="mt-sm">
+                Asistentes estimados: {evento.asistentes_estimados.toLocaleString()}
+              </ThemedText>
+            </div>
+          </Card>
+
+          <!-- Contacto -->
+          <Card variant="outlined" padding="lg" class="sidebar-card">
+            <ThemedText variant="title-md" class="sidebar-title">
+              📞 Contacto
+            </ThemedText>
+            <div class="sidebar-content mt-md">
+              <a href={`tel:${evento.contacto.telefono}`} class="contact-link">
+                <ThemedText variant="body-sm">{evento.contacto.telefono}</ThemedText>
+              </a>
+              <a href={`mailto:${evento.contacto.email}`} class="contact-link">
+                <ThemedText variant="body-sm">{evento.contacto.email}</ThemedText>
+              </a>
+              <a href={`https://${evento.contacto.web}`} target="_blank" rel="noopener" class="contact-link">
+                <ThemedText variant="body-sm">{evento.contacto.web}</ThemedText>
+              </a>
+            </div>
+          </Card>
+
+          <!-- CTA -->
+          <Button label="🎉 Quiero Asistir" size="lg" href="#" class="sidebar-cta" />
+          <Button label="❤️ Guardar Evento" variant="outlined" size="lg" href="#" />
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .evento-detail {
+    min-height: 100vh;
+  }
+
+  .evento-hero {
+    position: relative;
+    height: 350px;
+    overflow: hidden;
+  }
+
+  .evento-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .evento-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.5) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: var(--space-xl);
+  }
+
+  .evento-hero-badge {
+    align-self: flex-start;
+    margin-bottom: var(--space-md);
+  }
+
+  .evento-hero-title {
+    color: white;
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .evento-detail-content {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .evento-grid {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: var(--space-xl);
+  }
+
+  .evento-main {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mb-xl {
+    margin-bottom: var(--space-xxl);
+  }
+
+  .mb-lg {
+    margin-bottom: var(--space-lg);
+  }
+
+  .mt-md {
+    margin-top: var(--space-md);
+  }
+
+  .mt-sm {
+    margin-top: var(--space-sm);
+  }
+
+  .actividades-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .actividad-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .actividad-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+
+  .actividad-header h3 {
+    margin: 0;
+  }
+
+  .actividad-desc {
+    margin: 0;
+  }
+
+  .galeria-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+  }
+
+  .galeria-item {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface-container);
+  }
+
+  .galeria-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-normal);
+  }
+
+  .galeria-item:hover img {
+    transform: scale(1.05);
+  }
+
+  .evento-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .sidebar-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .sidebar-title {
+    margin: 0;
+  }
+
+  .sidebar-content p {
+    margin: 0;
+  }
+
+  .sidebar-content a {
+    display: block;
+    margin-top: var(--space-sm);
+  }
+
+  .contact-link {
+    text-decoration: none;
+    color: var(--color-primary);
+    transition: all var(--transition-fast);
+    display: block;
+    margin-top: var(--space-sm);
+  }
+
+  .contact-link:hover {
+    text-decoration: underline;
+  }
+
+  .sidebar-cta {
+    width: 100%;
+  }
+
+  @media (max-width: 1024px) {
+    .evento-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .galeria-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .evento-hero {
+      height: 250px;
+    }
+
+    .evento-hero-overlay {
+      padding: var(--space-lg);
+    }
+
+    .galeria-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,351 @@
+---
+import Layout from '../layouts/Layout.astro';
+import NavBar from '../components/ui/NavBar.astro';
+import Footer from '../components/ui/Footer.astro';
+import ThemedText from '../components/ui/ThemedText.astro';
+import Card from '../components/ui/Card.astro';
+import Button from '../components/ui/Button.astro';
+
+const equipo = [
+  {
+    nombre: 'Diana Rodríguez',
+    rol: 'Directora de Producto',
+    imagen: 'https://via.placeholder.com/200x200?text=Diana',
+  },
+  {
+    nombre: 'Carlos Mendoza',
+    rol: 'Lead Developer',
+    imagen: 'https://via.placeholder.com/200x200?text=Carlos',
+  },
+  {
+    nombre: 'Andrea López',
+    rol: 'Diseñadora UX/UI',
+    imagen: 'https://via.placeholder.com/200x200?text=Andrea',
+  },
+  {
+    nombre: 'Juan Pérez',
+    rol: 'Community Manager',
+    imagen: 'https://via.placeholder.com/200x200?text=Juan',
+  },
+];
+
+const valores = [
+  {
+    titulo: 'Inclusión',
+    descripcion: 'Creemos en una Cali accesible para todos, sin importar su origen.',
+    icono: '🤝',
+  },
+  {
+    titulo: 'Autenticidad',
+    descripcion: 'Promovemos el turismo que celebra la cultura y tradiciones locales.',
+    icono: '🎭',
+  },
+  {
+    titulo: 'Innovación',
+    descripcion: 'Usamos tecnología de IA para mejorar la experiencia turística.',
+    icono: '🚀',
+  },
+  {
+    titulo: 'Sostenibilidad',
+    descripcion: 'Protegemos nuestros lugares y comunidades para las futuras generaciones.',
+    icono: '🌱',
+  },
+];
+---
+
+<Layout title="Sobre Nosotros - LoCALIzate">
+  <NavBar />
+
+  <main class="sobre">
+    <!-- Hero -->
+    <section class="sobre-hero">
+      <div class="container">
+        <ThemedText variant="headline-lg" center class="hero-title">
+          Sobre LoCALIzate
+        </ThemedText>
+        <ThemedText variant="body-lg" color="muted" center class="hero-subtitle">
+          Conectando viajeros con la verdadera esencia de Cali
+        </ThemedText>
+      </div>
+    </section>
+
+    <!-- Historia -->
+    <section class="sobre-seccion">
+      <div class="container">
+        <div class="seccion-grid">
+          <div class="seccion-text">
+            <ThemedText variant="headline-md" class="seccion-titulo">
+              Nuestra Historia
+            </ThemedText>
+            <ThemedText variant="body-md" class="seccion-content">
+              LoCALIzate nace con la visión de transformar cómo las personas descubren y
+              experimentan Cali. Creemos que el mejor turismo es aquél que se conecta con
+              la comunidad local, respeta su cultura y permite a los visitantes vivir
+              experiencias auténticas.
+            </ThemedText>
+            <ThemedText variant="body-md" class="seccion-content">
+              Utilizamos inteligencia artificial y datos locales para crear recomendaciones
+              personalizadas que van más allá de los lugares típicos, llevando a nuestros
+              usuarios a descubrir gemas escondidas y sabores únicos que solo Cali tiene.
+            </ThemedText>
+          </div>
+          <Card variant="filled" padding="lg" class="seccion-visual">
+            <div class="visual-content">
+              <span class="visual-icon">🌍</span>
+              <ThemedText variant="title-md" center>
+                Transformando el Turismo Local
+              </ThemedText>
+            </div>
+          </Card>
+        </div>
+      </div>
+    </section>
+
+    <!-- Valores -->
+    <section class="sobre-valores">
+      <div class="container">
+        <ThemedText variant="headline-md" center class="valores-titulo">
+          Nuestros Valores
+        </ThemedText>
+
+        <div class="valores-grid">
+          {
+            valores.map((valor) => (
+              <Card variant="outlined" padding="lg" class="valor-card">
+                <div class="valor-icono">{valor.icono}</div>
+                <ThemedText variant="title-md" center class="valor-titulo">
+                  {valor.titulo}
+                </ThemedText>
+                <ThemedText variant="body-sm" color="muted" center class="valor-desc">
+                  {valor.descripcion}
+                </ThemedText>
+              </Card>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Equipo -->
+    <section class="sobre-equipo">
+      <div class="container">
+        <ThemedText variant="headline-md" center class="equipo-titulo">
+          Conoce a Nuestro Equipo
+        </ThemedText>
+
+        <div class="equipo-grid">
+          {
+            equipo.map((miembro) => (
+              <Card variant="filled" padding="lg" class="miembro-card">
+                <img src={miembro.imagen} alt={miembro.nombre} class="miembro-imagen" />
+                <ThemedText variant="title-md" center class="miembro-nombre">
+                  {miembro.nombre}
+                </ThemedText>
+                <ThemedText variant="label-lg" color="primary" center>
+                  {miembro.rol}
+                </ThemedText>
+              </Card>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="sobre-cta">
+      <div class="container">
+        <Card variant="elevated" padding="xxl" class="cta-card">
+          <ThemedText variant="headline-md" center class="cta-titulo">
+            ¿Listo para explorar Cali?
+          </ThemedText>
+          <ThemedText variant="body-md" color="muted" center class="cta-desc">
+            Únete a miles de viajeros que descubren la verdadera esencia de nuestra ciudad
+          </ThemedText>
+          <Button label="🗺️ Comenzar Exploración" size="lg" href="/explorador" class="cta-btn" />
+        </Card>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .sobre {
+    min-height: 100vh;
+  }
+
+  .sobre-hero {
+    background: linear-gradient(135deg, var(--color-primary-container), var(--color-tertiary-container));
+    padding: var(--space-xxl) 0;
+    text-align: center;
+  }
+
+  .hero-title {
+    margin: 0;
+  }
+
+  .hero-subtitle {
+    margin: 0;
+    margin-top: var(--space-lg);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .sobre-seccion {
+    padding: var(--space-xxl) 0;
+  }
+
+  .seccion-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xl);
+    align-items: center;
+  }
+
+  .seccion-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .seccion-titulo {
+    margin: 0;
+  }
+
+  .seccion-content {
+    margin: 0;
+    line-height: 1.8;
+  }
+
+  .seccion-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+  }
+
+  .visual-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-lg);
+    text-align: center;
+  }
+
+  .visual-icon {
+    font-size: 80px;
+  }
+
+  .sobre-valores {
+    background-color: var(--color-surface-container);
+    padding: var(--space-xxl) 0;
+  }
+
+  .valores-titulo {
+    margin: 0 0 var(--space-xl) 0;
+  }
+
+  .valores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-lg);
+  }
+
+  .valor-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-md);
+  }
+
+  .valor-icono {
+    font-size: 48px;
+  }
+
+  .valor-titulo {
+    margin: 0;
+  }
+
+  .valor-desc {
+    margin: 0;
+  }
+
+  .sobre-equipo {
+    padding: var(--space-xxl) 0;
+  }
+
+  .equipo-titulo {
+    margin: 0 0 var(--space-xl) 0;
+  }
+
+  .equipo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-lg);
+  }
+
+  .miembro-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-md);
+  }
+
+  .miembro-imagen {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--color-primary);
+  }
+
+  .miembro-nombre {
+    margin: 0;
+  }
+
+  .sobre-cta {
+    padding: var(--space-xxl) 0;
+  }
+
+  .cta-card {
+    text-align: center;
+    background: linear-gradient(135deg, var(--color-primary-container), var(--color-secondary-container));
+  }
+
+  .cta-titulo {
+    margin: 0;
+  }
+
+  .cta-desc {
+    margin: 0;
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-lg);
+  }
+
+  .cta-btn {
+    width: fit-content;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 768px) {
+    .seccion-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .seccion-visual {
+      min-height: 200px;
+    }
+
+    .visual-icon {
+      font-size: 56px;
+    }
+
+    .equipo-grid {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+  }
+</style>

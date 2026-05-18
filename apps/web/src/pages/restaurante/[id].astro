@@ -1,0 +1,501 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import NavBar from '../../components/ui/NavBar.astro';
+import Footer from '../../components/ui/Footer.astro';
+import ThemedText from '../../components/ui/ThemedText.astro';
+import Card from '../../components/ui/Card.astro';
+import Button from '../../components/ui/Button.astro';
+import Badge from '../../components/ui/Badge.astro';
+
+const { id } = Astro.params;
+
+const restaurante = {
+  id: id || '1',
+  nombre: 'Tierra Fría',
+  descripcion_corta: 'Cocina contemporánea con influencias locales e internacionales.',
+  descripcion_completa:
+    'Tierra Fría es un restaurante de alta cocina que celebra los ingredientes locales de Cali con técnicas modernas. Nuestro chef ha diseñado un menú que cambia con las estaciones, asegurando siempre la máxima frescura y calidad. Un espacio perfecto para cenas especiales.',
+  tipo: 'Contemporánea',
+  imagen: 'https://via.placeholder.com/800x400?text=Tierra+Fria',
+  imagenes: [
+    'https://via.placeholder.com/800x300?text=Tierra+Fria+1',
+    'https://via.placeholder.com/800x300?text=Tierra+Fria+2',
+    'https://via.placeholder.com/800x300?text=Tierra+Fria+3',
+  ],
+  rating: 4.9,
+  resenas_count: 425,
+  rango_precio: '$$$',
+  ubicacion: 'Cristo Rey',
+  direccion: 'Carrera 20 # 10-50, Cali',
+  horario: '6:00 PM - 11:30 PM',
+  dias_cerrado: 'Lunes',
+  contacto: {
+    telefono: '+57 2 555 7777',
+    email: 'reservas@tierrafria.co',
+    web: 'www.tierrafria.co',
+  },
+  menu: [
+    {
+      categoria: 'Entrada',
+      platos: [
+        { nombre: 'Ceviche de Camarón', precio: '$18.000' },
+        { nombre: 'Tabla de Quesos Locales', precio: '$16.000' },
+      ],
+    },
+    {
+      categoria: 'Plato Fuerte',
+      platos: [
+        { nombre: 'Lomo con Reducción de Café', precio: '$48.000' },
+        { nombre: 'Pez Vela a la Sal', precio: '$52.000' },
+      ],
+    },
+  ],
+  amenidades: ['WiFi', 'Estacionamiento', 'Reservas', 'Aire acondicionado', 'Terraza'],
+  resenas: [
+    {
+      autor: 'Carlos Ruiz',
+      rating: 5,
+      fecha: '2026-05-10',
+      texto: 'Excelente experiencia gastronómica. La presentación y sabor de los platos son excepcionales.',
+    },
+    {
+      autor: 'Patricia López',
+      rating: 5,
+      fecha: '2026-05-05',
+      texto: 'Ambiente perfecto para cena romántica. Muy recomendado.',
+    },
+  ],
+};
+---
+
+<Layout title={`${restaurante.nombre} - LoCALIzate`}>
+  <NavBar />
+
+  <main class="restaurante-detail">
+    <!-- Hero -->
+    <div class="restaurante-hero">
+      <img src={restaurante.imagen} alt={restaurante.nombre} />
+      <div class="restaurante-hero-overlay">
+        <div class="container">
+          <Badge color="secondary">{restaurante.tipo}</Badge>
+          <ThemedText variant="headline-lg" class="restaurante-hero-title">
+            {restaurante.nombre}
+          </ThemedText>
+          <div class="restaurante-rating">
+            <span class="stars">{'⭐'.repeat(Math.round(restaurante.rating))}</span>
+            <ThemedText variant="body-md" class="rating-text">
+              {restaurante.rating.toFixed(1)} • {restaurante.resenas_count} reseñas
+            </ThemedText>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container restaurante-detail-content py-xxl">
+      <div class="restaurante-grid">
+        <!-- Main -->
+        <div class="restaurante-main">
+          <!-- Descripción -->
+          <Card variant="filled" padding="lg" class="mb-xl">
+            <ThemedText variant="body-md">
+              {restaurante.descripcion_completa}
+            </ThemedText>
+          </Card>
+
+          <!-- Menú -->
+          <div class="mb-xl">
+            <ThemedText variant="headline-md" class="mb-lg">
+              Menú Destacado
+            </ThemedText>
+            {
+              restaurante.menu.map((seccion) => (
+                <div class="menu-seccion mb-lg">
+                  <ThemedText variant="title-md" class="menu-categoria">
+                    {seccion.categoria}
+                  </ThemedText>
+                  <div class="menu-items">
+                    {seccion.platos.map((plato) => (
+                      <Card variant="outlined" padding="md" class="menu-item">
+                        <div class="plato-header">
+                          <ThemedText variant="body-sm" class="plato-nombre">
+                            {plato.nombre}
+                          </ThemedText>
+                          <ThemedText variant="label-lg" color="primary">
+                            {plato.precio}
+                          </ThemedText>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+
+          <!-- Galería -->
+          {
+            restaurante.imagenes && restaurante.imagenes.length > 0 && (
+              <div class="mb-xl">
+                <ThemedText variant="headline-md" class="mb-lg">
+                  Galería
+                </ThemedText>
+                <div class="galeria-grid">
+                  {restaurante.imagenes.map((img) => (
+                    <div class="galeria-item">
+                      <img src={img} alt={restaurante.nombre} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
+          }
+
+          <!-- Reseñas -->
+          <div>
+            <ThemedText variant="headline-md" class="mb-lg">
+              Reseñas de Clientes
+            </ThemedText>
+            {restaurante.resenas.map((resena) => (
+              <Card variant="filled" padding="lg" class="resena-card mb-md">
+                <div class="resena-header">
+                  <div>
+                    <ThemedText variant="title-sm">{resena.autor}</ThemedText>
+                    <ThemedText variant="label-sm" color="muted">
+                      {new Date(resena.fecha).toLocaleDateString('es-CO')}
+                    </ThemedText>
+                  </div>
+                  <span class="resena-stars">
+                    {'⭐'.repeat(resena.rating)}
+                  </span>
+                </div>
+                <ThemedText variant="body-sm" class="resena-texto">
+                  {resena.texto}
+                </ThemedText>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="restaurante-sidebar">
+          <!-- Info General -->
+          <Card variant="elevated" padding="lg" class="sidebar-card">
+            <ThemedText variant="title-md" class="sidebar-title">
+              ⏰ Horario
+            </ThemedText>
+            <div class="sidebar-content mt-md">
+              <ThemedText variant="body-sm">
+                {restaurante.horario}
+              </ThemedText>
+              <ThemedText variant="label-sm" color="muted" class="mt-sm">
+                Cerrado: {restaurante.dias_cerrado}
+              </ThemedText>
+            </div>
+          </Card>
+
+          <!-- Ubicación -->
+          <Card variant="elevated" padding="lg" class="sidebar-card">
+            <ThemedText variant="title-md" class="sidebar-title">
+              📍 Ubicación
+            </ThemedText>
+            <div class="sidebar-content mt-md">
+              <ThemedText variant="body-sm">
+                {restaurante.ubicacion}
+              </ThemedText>
+              <ThemedText variant="label-sm" color="muted" class="mt-sm">
+                {restaurante.direccion}
+              </ThemedText>
+              <Button label="Cómo llegar" variant="text" size="sm" href="#" class="mt-md" />
+            </div>
+          </Card>
+
+          <!-- Amenidades -->
+          <Card variant="outlined" padding="lg" class="sidebar-card">
+            <ThemedText variant="title-md" class="sidebar-title">
+              ✨ Amenidades
+            </ThemedText>
+            <div class="amenidades-list mt-md">
+              {restaurante.amenidades.map((amenidad) => (
+                <div class="amenidad">
+                  <span class="amenidad-check">✓</span>
+                  <ThemedText variant="body-sm">{amenidad}</ThemedText>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          <!-- Contacto -->
+          <Card variant="outlined" padding="lg" class="sidebar-card">
+            <ThemedText variant="title-md" class="sidebar-title">
+              📞 Contacto
+            </ThemedText>
+            <div class="sidebar-content mt-md">
+              <a href={`tel:${restaurante.contacto.telefono}`} class="contact-link">
+                <ThemedText variant="body-sm">{restaurante.contacto.telefono}</ThemedText>
+              </a>
+              <a href={`mailto:${restaurante.contacto.email}`} class="contact-link">
+                <ThemedText variant="body-sm">{restaurante.contacto.email}</ThemedText>
+              </a>
+              <a href={`https://${restaurante.contacto.web}`} target="_blank" rel="noopener" class="contact-link">
+                <ThemedText variant="body-sm">{restaurante.contacto.web}</ThemedText>
+              </a>
+            </div>
+          </Card>
+
+          <!-- CTA -->
+          <Button label="🍴 Hacer Reserva" size="lg" href="#" class="sidebar-cta" />
+          <Button label="❤️ Guardar" variant="outlined" size="lg" href="#" />
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .restaurante-detail {
+    min-height: 100vh;
+  }
+
+  .restaurante-hero {
+    position: relative;
+    height: 350px;
+    overflow: hidden;
+  }
+
+  .restaurante-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .restaurante-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.5) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: var(--space-xl);
+  }
+
+  .restaurante-hero-title {
+    color: white;
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .restaurante-rating {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+  }
+
+  .stars {
+    font-size: 24px;
+  }
+
+  .rating-text {
+    color: white;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .restaurante-detail-content {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .restaurante-grid {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: var(--space-xl);
+  }
+
+  .restaurante-main {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mb-xl {
+    margin-bottom: var(--space-xxl);
+  }
+
+  .mb-lg {
+    margin-bottom: var(--space-lg);
+  }
+
+  .mb-md {
+    margin-bottom: var(--space-md);
+  }
+
+  .mt-md {
+    margin-top: var(--space-md);
+  }
+
+  .mt-sm {
+    margin-top: var(--space-sm);
+  }
+
+  .menu-seccion {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .menu-categoria {
+    margin: 0;
+    color: var(--color-primary);
+  }
+
+  .menu-items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .menu-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .plato-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  .plato-nombre {
+    margin: 0;
+  }
+
+  .galeria-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+  }
+
+  .galeria-item {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface-container);
+  }
+
+  .galeria-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-normal);
+  }
+
+  .galeria-item:hover img {
+    transform: scale(1.05);
+  }
+
+  .resena-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .resena-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .resena-stars {
+    font-size: 18px;
+  }
+
+  .resena-texto {
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .restaurante-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .sidebar-card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-title {
+    margin: 0;
+  }
+
+  .sidebar-content p,
+  .sidebar-content a {
+    margin: 0;
+  }
+
+  .contact-link {
+    display: block;
+    text-decoration: none;
+    color: var(--color-primary);
+    transition: all var(--transition-fast);
+    margin-top: var(--space-sm);
+  }
+
+  .contact-link:hover {
+    text-decoration: underline;
+  }
+
+  .amenidades-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .amenidad {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .amenidad-check {
+    color: var(--color-tertiary);
+    font-weight: 700;
+    font-size: 18px;
+  }
+
+  .amenidad p {
+    margin: 0;
+  }
+
+  .sidebar-cta {
+    width: 100%;
+  }
+
+  @media (max-width: 1024px) {
+    .restaurante-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .galeria-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .restaurante-hero {
+      height: 250px;
+    }
+
+    .restaurante-hero-overlay {
+      padding: var(--space-lg);
+    }
+
+    .galeria-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

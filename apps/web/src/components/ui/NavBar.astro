@@ -1,0 +1,133 @@
+---
+interface NavItem {
+  label: string;
+  href: string;
+  icon?: string;
+}
+
+interface Props {
+  items?: NavItem[];
+  brandName?: string;
+  brandHref?: string;
+}
+
+const {
+  items = [
+    { label: 'Explorador', href: '/explorador' },
+    { label: 'Rutas', href: '/rutas' },
+    { label: 'Eventos', href: '/eventos' },
+    { label: 'Sobre', href: '/sobre' },
+  ],
+  brandName = 'LoCALIzate',
+  brandHref = '/',
+} = Astro.props;
+---
+
+<nav class="navbar">
+  <div class="container flex justify-between items-center py-lg px-lg">
+    <!-- Brand -->
+    <a href={brandHref} class="navbar-brand">
+      <span class="navbar-brand-icon">🌿</span>
+      <span class="navbar-brand-text headline-md">{brandName}</span>
+    </a>
+
+    <!-- Menu -->
+    <div class="navbar-menu">
+      {
+        items.map((item) => (
+          <a href={item.href} class="navbar-link body-md">
+            {item.icon && <span class="navbar-link-icon">{item.icon}</span>}
+            <span>{item.label}</span>
+          </a>
+        ))
+      }
+    </div>
+
+    <!-- CTA -->
+    <a href="/explorador" class="btn btn-filled btn-md">
+      Comenzar
+    </a>
+  </div>
+</nav>
+
+<style>
+  .navbar {
+    background-color: var(--color-surface);
+    border-bottom: 1px solid var(--color-outline-variant);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    text-decoration: none;
+    color: var(--color-on-surface);
+    transition: all var(--transition-fast);
+  }
+
+  .navbar-brand:hover {
+    color: var(--color-primary);
+  }
+
+  .navbar-brand-icon {
+    font-size: 28px;
+  }
+
+  .navbar-brand-text {
+    margin: 0;
+    color: inherit;
+  }
+
+  .navbar-menu {
+    display: flex;
+    gap: var(--space-xl);
+    align-items: center;
+  }
+
+  .navbar-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    text-decoration: none;
+    color: var(--color-on-surface);
+    transition: all var(--transition-fast);
+    position: relative;
+  }
+
+  .navbar-link:hover {
+    color: var(--color-primary);
+  }
+
+  .navbar-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--color-primary);
+    transition: width var(--transition-fast);
+  }
+
+  .navbar-link:hover::after {
+    width: 100%;
+  }
+
+  .navbar-link-icon {
+    font-size: 18px;
+  }
+
+  @media (max-width: 768px) {
+    .navbar-menu {
+      display: none;
+    }
+
+    .container {
+      flex-wrap: wrap;
+    }
+  }
+</style>

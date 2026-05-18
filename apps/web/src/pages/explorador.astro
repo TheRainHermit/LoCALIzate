@@ -1,0 +1,262 @@
+---
+import Layout from '../layouts/Layout.astro';
+import NavBar from '../components/ui/NavBar.astro';
+import Footer from '../components/ui/Footer.astro';
+import ThemedText from '../components/ui/ThemedText.astro';
+import LocationCard from '../components/LocationCard.astro';
+import Button from '../components/ui/Button.astro';
+
+// Mock data - En producción vendría del backend
+const lugares = [
+  {
+    id: '1',
+    nombre: 'Cristo Rey',
+    zona: 'San Antonio',
+    descripcion_corta: 'Monumento icónico que domina la ciudad desde lo alto con vistas espectaculares.',
+    imagen: 'https://via.placeholder.com/400x300?text=Cristo+Rey',
+    categoria: 'Cultura',
+    rating: 4.8,
+    resenas_count: 324,
+    distancia: 1200,
+  },
+  {
+    id: '2',
+    nombre: 'San Antonio',
+    zona: 'Centro',
+    descripcion_corta: 'Barrio bohemio lleno de galerías de arte, tiendas artesanales y cafés.',
+    imagen: 'https://via.placeholder.com/400x300?text=San+Antonio',
+    categoria: 'Cultura',
+    rating: 4.6,
+    resenas_count: 287,
+    distancia: 800,
+  },
+  {
+    id: '3',
+    nombre: 'Zoológico de Cali',
+    zona: 'Pasoancho',
+    descripcion_corta: 'Hogar de animales exóticos y experiencias educativas para toda la familia.',
+    imagen: 'https://via.placeholder.com/400x300?text=Zoo+Cali',
+    categoria: 'Entretenimiento',
+    rating: 4.4,
+    resenas_count: 512,
+    distancia: 3500,
+  },
+  {
+    id: '4',
+    nombre: 'La Ermita',
+    zona: 'Centro',
+    descripcion_corta: 'Iglesia colonial histórica, símbolo de fe y arquitectura en el corazón de Cali.',
+    imagen: 'https://via.placeholder.com/400x300?text=La+Ermita',
+    categoria: 'Cultura',
+    rating: 4.7,
+    resenas_count: 198,
+    distancia: 600,
+  },
+  {
+    id: '5',
+    nombre: 'Parque Belalcázar',
+    zona: 'Centro',
+    descripcion_corta: 'Espacio verde con vistas privilegiadas de la ciudad y zona de picnic.',
+    imagen: 'https://via.placeholder.com/400x300?text=Parque+Belalcazar',
+    categoria: 'Naturaleza',
+    rating: 4.5,
+    resenas_count: 276,
+    distancia: 1500,
+  },
+  {
+    id: '6',
+    nombre: 'Mercado de Abastos',
+    zona: 'San Alejo',
+    descripcion_corta: 'Mercado tradicional caleño con productos frescos y sabores auténticos.',
+    imagen: 'https://via.placeholder.com/400x300?text=Mercado+Abastos',
+    categoria: 'Gastronomía',
+    rating: 4.3,
+    resenas_count: 165,
+    distancia: 2000,
+  },
+];
+
+const [searchTerm, setSearchTerm] = ['', ''];
+---
+
+<Layout title="Explorador - LoCALIzate">
+  <NavBar />
+
+  <main class="explorador">
+    <div class="explorador-header">
+      <div class="container py-xl">
+        <ThemedText variant="headline-lg" class="explorador-title">
+          🗺️ Explorador de Lugares
+        </ThemedText>
+        <ThemedText variant="body-lg" color="muted" class="explorador-subtitle">
+          Descubre los lugares más emblemáticos de Cali
+        </ThemedText>
+      </div>
+    </div>
+
+    <section class="explorador-content">
+      <div class="container">
+        <!-- Filtros -->
+        <div class="explorador-filters">
+          <input
+            type="text"
+            placeholder="Buscar lugares..."
+            class="search-input"
+            id="searchInput"
+          />
+          <div class="filter-badges">
+            <button class="filter-btn active" data-filter="all">Todos</button>
+            <button class="filter-btn" data-filter="cultura">Cultura</button>
+            <button class="filter-btn" data-filter="gastronomia">Gastronomía</button>
+            <button class="filter-btn" data-filter="naturaleza">Naturaleza</button>
+            <button class="filter-btn" data-filter="entretenimiento">Entretenimiento</button>
+          </div>
+        </div>
+
+        <!-- Grid de Lugares -->
+        <div class="lugares-grid">
+          {lugares.map((lugar) => (
+            <LocationCard {...lugar} />
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .explorador {
+    min-height: 100vh;
+  }
+
+  .explorador-header {
+    background: linear-gradient(
+      135deg,
+      var(--color-primary-container),
+      var(--color-secondary-container)
+    );
+    border-bottom: 2px solid var(--color-primary);
+  }
+
+  .explorador-title {
+    margin: 0;
+    color: var(--color-on-surface);
+  }
+
+  .explorador-subtitle {
+    margin: 0;
+    margin-top: var(--space-md);
+  }
+
+  .explorador-content {
+    padding: var(--space-xxl) 0;
+  }
+
+  .explorador-filters {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xxl);
+  }
+
+  .search-input {
+    width: 100%;
+    padding: var(--space-md) var(--space-lg);
+    border: 2px solid var(--color-outline-variant);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-body);
+    font-size: var(--text-body-md);
+    color: var(--color-on-surface);
+    background-color: var(--color-surface);
+    transition: all var(--transition-fast);
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(126, 87, 0, 0.1);
+  }
+
+  .filter-badges {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    padding: var(--space-sm) var(--space-lg);
+    border: 2px solid var(--color-outline-variant);
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    font-family: var(--font-body);
+    font-size: var(--text-label-md);
+    font-weight: var(--text-label-md-weight);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .filter-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .filter-btn.active {
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    border-color: var(--color-primary);
+  }
+
+  .lugares-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-lg);
+  }
+
+  @media (max-width: 768px) {
+    .explorador-header {
+      padding: var(--space-xl) 0;
+    }
+
+    .explorador-filters {
+      gap: var(--space-md);
+    }
+
+    .filter-badges {
+      gap: var(--space-sm);
+    }
+
+    .lugares-grid {
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: var(--space-md);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .lugares-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  const searchInput = document.getElementById('searchInput');
+  const filterBtns = document.querySelectorAll('.filter-btn');
+
+  searchInput?.addEventListener('input', (e) => {
+    const term = (e.target as HTMLInputElement).value.toLowerCase();
+    // En producción aquí harías filtering real
+    console.log('Buscar:', term);
+  });
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.getAttribute('data-filter');
+      console.log('Filtrar por:', filter);
+    });
+  });
+</script>

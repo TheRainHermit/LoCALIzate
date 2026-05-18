@@ -1,0 +1,35 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'div'> {
+  variant?: 'elevated' | 'filled' | 'outlined';
+  padding?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  hoverable?: boolean;
+}
+
+const {
+  variant = 'elevated',
+  padding = 'lg',
+  hoverable = false,
+  class: className,
+  ...props
+} = Astro.props;
+
+const cardClass = `card card-${variant} p-${padding} ${hoverable ? 'card-hoverable' : ''}`;
+---
+
+<div class={`${cardClass} ${className || ''}`} {...props}>
+  <slot />
+</div>
+
+<style>
+  .card-hoverable {
+    transition: all var(--transition-fast);
+    cursor: pointer;
+  }
+
+  .card-hoverable:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+</style>

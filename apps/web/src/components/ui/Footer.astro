@@ -1,0 +1,143 @@
+---
+interface Props {
+  year?: number;
+}
+
+const { year = new Date().getFullYear() } = Astro.props;
+---
+
+<footer class="footer">
+  <div class="container">
+    <!-- Content -->
+    <div class="footer-content grid grid-3 gap-xl py-xxl px-lg">
+      <!-- About -->
+      <div class="footer-section">
+        <h3 class="title-md mb-lg">LoCALIzate</h3>
+        <p class="body-sm text-muted">
+          Descubre Cali con inteligencia artificial. Mapas interactivos, guías locales y experiencias personalizadas.
+        </p>
+      </div>
+
+      <!-- Links -->
+      <div class="footer-section">
+        <h4 class="title-sm mb-lg">Explorar</h4>
+        <ul class="footer-links">
+          <li>
+            <a href="/explorador" class="body-sm">Lugares</a>
+          </li>
+          <li>
+            <a href="/rutas" class="body-sm">Rutas</a>
+          </li>
+          <li>
+            <a href="/eventos" class="body-sm">Eventos</a>
+          </li>
+          <li>
+            <a href="/gastronomia" class="body-sm">Gastronomía</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div class="footer-section">
+        <h4 class="title-sm mb-lg">Contacto</h4>
+        <ul class="footer-links">
+          <li>
+            <a href="mailto:info@localizate.co" class="body-sm">📧 Email</a>
+          </li>
+          <li>
+            <a href="https://instagram.com" target="_blank" rel="noopener" class="body-sm">📱 Instagram</a>
+          </li>
+          <li>
+            <a href="https://facebook.com" target="_blank" rel="noopener" class="body-sm">👥 Facebook</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom -->
+    <div class="footer-bottom flex justify-between items-center px-lg py-lg border-top">
+      <p class="body-sm text-muted">© {year} LoCALIzate. Todos los derechos reservados.</p>
+      <div class="footer-bottom-links flex gap-lg">
+        <a href="/privacidad" class="body-sm">Privacidad</a>
+        <a href="/terminos" class="body-sm">Términos</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background-color: var(--color-surface-container);
+    border-top: 1px solid var(--color-outline-variant);
+    margin-top: var(--space-xxl);
+  }
+
+  .footer-content {
+    border-bottom: 1px solid var(--color-outline-variant);
+  }
+
+  .footer-section h3,
+  .footer-section h4 {
+    margin: 0;
+    color: var(--color-on-surface);
+  }
+
+  .footer-section p {
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .footer-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .footer-links a {
+    text-decoration: none;
+    color: var(--color-on-surface);
+    transition: all var(--transition-fast);
+  }
+
+  .footer-links a:hover {
+    color: var(--color-primary);
+    transform: translateX(4px);
+  }
+
+  .footer-bottom {
+    gap: var(--space-lg);
+    flex-wrap: wrap;
+  }
+
+  .footer-bottom-links a {
+    text-decoration: none;
+    color: var(--color-on-surface);
+    transition: all var(--transition-fast);
+  }
+
+  .footer-bottom-links a:hover {
+    color: var(--color-primary);
+  }
+
+  .border-top {
+    border-top: 1px solid var(--color-outline-variant);
+  }
+
+  .mb-lg {
+    margin-bottom: var(--space-lg);
+  }
+
+  @media (max-width: 768px) {
+    .footer-content {
+      grid-template-columns: 1fr;
+    }
+
+    .footer-bottom {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

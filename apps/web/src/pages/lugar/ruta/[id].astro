@@ -1,0 +1,316 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import NavBar from '../../../components/ui/NavBar.astro';
+import Footer from '../../../components/ui/Footer.astro';
+import ThemedText from '../../../components/ui/ThemedText.astro';
+import Card from '../../../components/ui/Card.astro';
+import Button from '../../../components/ui/Button.astro';
+import Badge from '../../../components/ui/Badge.astro';
+
+const { id } = Astro.params;
+
+const ruta = {
+  id: id || '1',
+  nombre: 'Cristo Rey & San Antonio',
+  descripcion: 'Conoce el monumento más icónico de Cali y el barrio bohemio caleño.',
+  descripcion_completa:
+    'Esta ruta combina dos lugares emblemáticos de Cali: el majestuoso Cristo Rey con sus vistas panorámicas y el colorido barrio de San Antonio con su oferta cultural. Perfecto para un día de exploración urbana.',
+  dificultad: 'Fácil',
+  distancia: 3.5,
+  tiempo: 2,
+  costo: 'Gratis',
+  imagen: 'https://via.placeholder.com/800x400?text=Ruta+Cristo+Rey',
+  pasos: [
+    {
+      numero: 1,
+      titulo: 'Inicio en Cristo Rey',
+      descripcion: 'Comienza visitando el monumento icónico. Sube a pie o en cable.',
+      distancia: 0,
+      icono: '🏔️',
+    },
+    {
+      numero: 2,
+      titulo: 'Galería de arte',
+      descripcion: 'Visita una galería de arte local cerca del monumento.',
+      distancia: 1.2,
+      icono: '🎨',
+    },
+    {
+      numero: 3,
+      titulo: 'Descanso en cafetería',
+      descripcion: 'Tómate un café en una cafetería local con vistas.',
+      distancia: 0.8,
+      icono: '☕',
+    },
+    {
+      numero: 4,
+      titulo: 'Tiendas artesanales',
+      descripcion: 'Explora las tiendas de artesanías y souvenirs locales.',
+      distancia: 0.5,
+      icono: '🎁',
+    },
+    {
+      numero: 5,
+      titulo: 'Restaurante típico',
+      descripcion: 'Termina con comida típica caleña en un restaurante tradicional.',
+      distancia: 1.0,
+      icono: '🍽️',
+    },
+  ],
+};
+---
+
+<Layout title={`${ruta.nombre} - LoCALIzate`}>
+  <NavBar />
+
+  <main class="ruta-detail">
+    <div class="ruta-hero">
+      <img src={ruta.imagen} alt={ruta.nombre} />
+      <div class="ruta-hero-overlay">
+        <div class="container">
+          <ThemedText variant="headline-lg" class="ruta-hero-title">
+            {ruta.nombre}
+          </ThemedText>
+        </div>
+      </div>
+    </div>
+
+    <div class="container ruta-detail-content py-xxl">
+      <!-- Header con stats -->
+      <div class="ruta-stats-header">
+        <div class="stat-box">
+          <span class="stat-value">{ruta.distancia}km</span>
+          <ThemedText variant="label-sm">Distancia</ThemedText>
+        </div>
+        <div class="stat-box">
+          <span class="stat-value">{ruta.tiempo}h</span>
+          <ThemedText variant="label-sm">Duración</ThemedText>
+        </div>
+        <div class="stat-box">
+          <span class="stat-value">{ruta.costo}</span>
+          <ThemedText variant="label-sm">Costo</ThemedText>
+        </div>
+        <div class="stat-box">
+          <Badge color="primary">{ruta.dificultad}</Badge>
+        </div>
+      </div>
+
+      <!-- Descripción -->
+      <Card variant="filled" padding="lg" class="mt-xl">
+        <ThemedText variant="body-md">
+          {ruta.descripcion_completa}
+        </ThemedText>
+      </Card>
+
+      <!-- Pasos de la ruta -->
+      <div class="mt-xl">
+        <ThemedText variant="headline-md" class="mb-lg">
+          Pasos de la Ruta
+        </ThemedText>
+
+        <div class="pasos-timeline">
+          {
+            ruta.pasos.map((paso, index) => (
+              <div class={`paso ${index === ruta.pasos.length - 1 ? 'paso-last' : ''}`}>
+                <div class="paso-marker">
+                  <div class="paso-number">{paso.numero}</div>
+                  {index < ruta.pasos.length - 1 && <div class="paso-line"></div>}
+                </div>
+                <Card variant="outlined" padding="lg" class="paso-card">
+                  <div class="paso-icon">{paso.icono}</div>
+                  <ThemedText variant="title-md" class="paso-title">
+                    {paso.titulo}
+                  </ThemedText>
+                  <ThemedText variant="body-sm" color="muted" class="paso-desc">
+                    {paso.descripcion}
+                  </ThemedText>
+                  {paso.distancia > 0 && (
+                    <ThemedText variant="label-sm" class="paso-distancia">
+                      ↳ +{paso.distancia}km desde aquí
+                    </ThemedText>
+                  )}
+                </Card>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="ruta-actions mt-xl">
+        <Button label="🗺️ Iniciar Navegación" size="lg" />
+        <Button label="❤️ Guardar Ruta" variant="outlined" size="lg" />
+        <Button label="📱 Compartir" variant="tonal" size="lg" />
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .ruta-detail {
+    min-height: 100vh;
+  }
+
+  .ruta-hero {
+    position: relative;
+    height: 350px;
+    overflow: hidden;
+  }
+
+  .ruta-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ruta-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+    display: flex;
+    align-items: flex-end;
+    padding: var(--space-xl);
+  }
+
+  .ruta-hero-title {
+    color: white;
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .ruta-detail-content {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .ruta-stats-header {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+  }
+
+  .stat-box {
+    background-color: var(--color-primary-container);
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .stat-value {
+    font-size: var(--text-headline-md);
+    font-weight: 800;
+    color: var(--color-on-primary-container);
+  }
+
+  .pasos-timeline {
+    position: relative;
+    padding: var(--space-lg) 0;
+  }
+
+  .paso {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-lg);
+  }
+
+  .paso-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  .paso-number {
+    width: 48px;
+    height: 48px;
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    z-index: 2;
+  }
+
+  .paso-line {
+    position: absolute;
+    top: 48px;
+    width: 3px;
+    height: 60px;
+    background-color: var(--color-outline-variant);
+  }
+
+  .paso-last .paso-line {
+    display: none;
+  }
+
+  .paso-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .paso-icon {
+    font-size: 32px;
+  }
+
+  .paso-title {
+    margin: 0;
+  }
+
+  .paso-desc {
+    margin: 0;
+  }
+
+  .paso-distancia {
+    display: block;
+    margin-top: var(--space-sm);
+    color: var(--color-tertiary);
+  }
+
+  .ruta-actions {
+    display: flex;
+    gap: var(--space-lg);
+    flex-wrap: wrap;
+  }
+
+  .mt-xl {
+    margin-top: var(--space-xxl);
+  }
+
+  .mt-lg {
+    margin-top: var(--space-lg);
+  }
+
+  .mb-lg {
+    margin-bottom: var(--space-lg);
+  }
+
+  @media (max-width: 768px) {
+    .ruta-hero {
+      height: 250px;
+    }
+
+    .ruta-stats-header {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .ruta-actions {
+      flex-direction: column;
+    }
+
+    .ruta-actions :global(button),
+    .ruta-actions :global(a) {
+      width: 100%;
+    }
+  }
+</style>

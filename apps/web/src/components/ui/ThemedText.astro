@@ -1,0 +1,51 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'p'> {
+  variant?: 
+    | 'headline-xl'
+    | 'headline-lg'
+    | 'headline-md'
+    | 'title-lg'
+    | 'title-md'
+    | 'title-sm'
+    | 'body-lg'
+    | 'body-md'
+    | 'body-sm'
+    | 'label-lg'
+    | 'label-md'
+    | 'label-sm';
+  color?: 'primary' | 'secondary' | 'error' | 'muted' | 'inherit';
+  center?: boolean;
+  as?: 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+}
+
+const {
+  variant = 'body-md',
+  color = 'inherit',
+  center = false,
+  as: Element = 'p',
+  class: className,
+  ...props
+} = Astro.props;
+
+const textClass = `${variant} ${color !== 'inherit' ? `text-${color}` : ''} ${center ? 'text-center' : ''}`;
+---
+
+<Element class={`${textClass} ${className || ''}`} {...props}>
+  <slot />
+</Element>
+
+<style>
+  span,
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0;
+    padding: 0;
+  }
+</style>

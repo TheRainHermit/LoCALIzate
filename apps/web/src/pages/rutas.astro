@@ -1,0 +1,275 @@
+---
+import Layout from '../layouts/Layout.astro';
+import NavBar from '../components/ui/NavBar.astro';
+import Footer from '../components/ui/Footer.astro';
+import ThemedText from '../components/ui/ThemedText.astro';
+import Card from '../components/ui/Card.astro';
+import Badge from '../components/ui/Badge.astro';
+import Button from '../components/ui/Button.astro';
+
+const rutas = [
+  {
+    id: '1',
+    nombre: 'Cristo Rey & San Antonio',
+    descripcion: 'Conoce el monumento más icónico de Cali y el barrio bohemio caleño.',
+    dificultad: 'Fácil',
+    distancia: 3.5,
+    tiempo: 2,
+    costo: 'Gratis',
+    lugares: 5,
+    imagen: 'https://via.placeholder.com/400x250?text=Ruta+1',
+  },
+  {
+    id: '2',
+    nombre: 'Sabores Locales',
+    descripcion: 'Recorrido gastronómico por los mejores restaurantes y mercados de Cali.',
+    dificultad: 'Media',
+    distancia: 5.2,
+    tiempo: 3,
+    costo: 'Varía',
+    lugares: 8,
+    imagen: 'https://via.placeholder.com/400x250?text=Ruta+2',
+  },
+  {
+    id: '3',
+    nombre: 'Naturaleza Urbana',
+    descripcion: 'Parques y espacios verdes dentro de la ciudad para desconectarse.',
+    dificultad: 'Fácil',
+    distancia: 4.0,
+    tiempo: 2.5,
+    costo: 'Gratis',
+    lugares: 4,
+    imagen: 'https://via.placeholder.com/400x250?text=Ruta+3',
+  },
+  {
+    id: '4',
+    nombre: 'Arte & Cultura',
+    descripcion: 'Museos, galerías y espacios culturales de la ciudad caleña.',
+    dificultad: 'Media',
+    distancia: 6.0,
+    tiempo: 4,
+    costo: 'Varía',
+    lugares: 6,
+    imagen: 'https://via.placeholder.com/400x250?text=Ruta+4',
+  },
+];
+
+const difficultyColors: Record<string, 'primary' | 'secondary' | 'tertiary'> = {
+  'Fácil': 'tertiary',
+  'Media': 'primary',
+  'Difícil': 'secondary',
+};
+---
+
+<Layout title="Rutas - LoCALIzate">
+  <NavBar />
+
+  <main class="rutas">
+    <div class="rutas-header">
+      <div class="container py-xl">
+        <ThemedText variant="headline-lg" class="rutas-title">
+          🧭 Rutas Recomendadas
+        </ThemedText>
+        <ThemedText variant="body-lg" color="muted" class="rutas-subtitle">
+          Recorridos curados para explorar Cali de la mejor manera
+        </ThemedText>
+      </div>
+    </div>
+
+    <section class="rutas-content">
+      <div class="container">
+        <div class="rutas-grid">
+          {
+            rutas.map((ruta) => (
+              <Card variant="elevated" padding="0" hoverable class="ruta-card">
+                <a href={`/ruta/${ruta.id}`} class="ruta-card-link">
+                  <div class="ruta-image">
+                    <img src={ruta.imagen} alt={ruta.nombre} />
+                  </div>
+                  <div class="ruta-info">
+                    <div class="ruta-header">
+                      <ThemedText variant="title-md" as="h3">
+                        {ruta.nombre}
+                      </ThemedText>
+                      <Badge color={difficultyColors[ruta.dificultad] || 'primary'}>
+                        {ruta.dificultad}
+                      </Badge>
+                    </div>
+
+                    <ThemedText variant="body-sm" color="muted" class="ruta-desc">
+                      {ruta.descripcion}
+                    </ThemedText>
+
+                    <div class="ruta-stats">
+                      <div class="stat">
+                        <span class="stat-icon">📏</span>
+                        <ThemedText variant="label-sm">{ruta.distancia}km</ThemedText>
+                      </div>
+                      <div class="stat">
+                        <span class="stat-icon">🕐</span>
+                        <ThemedText variant="label-sm">{ruta.tiempo}h</ThemedText>
+                      </div>
+                      <div class="stat">
+                        <span class="stat-icon">📍</span>
+                        <ThemedText variant="label-sm">{ruta.lugares} lugares</ThemedText>
+                      </div>
+                      <div class="stat">
+                        <span class="stat-icon">💰</span>
+                        <ThemedText variant="label-sm">{ruta.costo}</ThemedText>
+                      </div>
+                    </div>
+
+                    <Button
+                      label="Ver Ruta"
+                      variant="filled"
+                      size="md"
+                      class="ruta-cta"
+                    />
+                  </div>
+                </a>
+              </Card>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .rutas {
+    min-height: 100vh;
+  }
+
+  .rutas-header {
+    background: linear-gradient(
+      135deg,
+      var(--color-tertiary-container),
+      var(--color-primary-container)
+    );
+    border-bottom: 2px solid var(--color-tertiary);
+  }
+
+  .rutas-title {
+    margin: 0;
+  }
+
+  .rutas-subtitle {
+    margin: 0;
+    margin-top: var(--space-md);
+  }
+
+  .rutas-content {
+    padding: var(--space-xxl) 0;
+  }
+
+  .rutas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--space-lg);
+  }
+
+  .ruta-card {
+    overflow: hidden;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ruta-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .ruta-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background-color: var(--color-surface-container);
+  }
+
+  .ruta-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-normal);
+  }
+
+  .ruta-card:hover .ruta-image img {
+    transform: scale(1.05);
+  }
+
+  .ruta-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    flex: 1;
+  }
+
+  .ruta-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+
+  .ruta-header h3 {
+    margin: 0;
+    flex: 1;
+  }
+
+  .ruta-desc {
+    margin: 0;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .ruta-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    background-color: var(--color-surface-container-low);
+    border-radius: var(--radius-md);
+  }
+
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  .stat-icon {
+    font-size: 18px;
+  }
+
+  .ruta-cta {
+    width: 100%;
+    margin-top: auto;
+  }
+
+  @media (max-width: 768px) {
+    .rutas-grid {
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+
+    .ruta-image {
+      height: 150px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .rutas-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

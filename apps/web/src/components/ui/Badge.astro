@@ -1,0 +1,33 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'span'> {
+  color?: 'primary' | 'secondary' | 'tertiary' | 'error';
+  size?: 'sm' | 'md';
+}
+
+const {
+  color = 'primary',
+  size = 'md',
+  class: className,
+  ...props
+} = Astro.props;
+
+const badgeClass = `badge badge-${color} badge-${size}`;
+---
+
+<span class={`${badgeClass} ${className || ''}`} {...props}>
+  <slot />
+</span>
+
+<style>
+  .badge-sm {
+    font-size: var(--text-label-sm);
+    padding: var(--space-xs) calc(var(--space-xs) * 1.5);
+  }
+
+  .badge-md {
+    font-size: var(--text-label-md);
+    padding: var(--space-sm) var(--space-md);
+  }
+</style>

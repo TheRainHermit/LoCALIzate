@@ -1,0 +1,382 @@
+---
+import Layout from '../layouts/Layout.astro';
+import NavBar from '../components/ui/NavBar.astro';
+import Footer from '../components/ui/Footer.astro';
+import ThemedText from '../components/ui/ThemedText.astro';
+import Card from '../components/ui/Card.astro';
+import Badge from '../components/ui/Badge.astro';
+import Button from '../components/ui/Button.astro';
+
+const restaurantes = [
+  {
+    id: '1',
+    nombre: 'El Sabor Caleño',
+    descripcion: 'Comida típica caleña en un ambiente tradicional y acogedor.',
+    tipo: 'Típica',
+    ubicacion: 'San Antonio',
+    imagen: 'https://via.placeholder.com/400x300?text=El+Sabor+Caleño',
+    rating: 4.7,
+    resenas: 245,
+    rango_precio: '$$',
+    especialidad: 'Bandeja Paisa, Ajiaco',
+    horario: '10:00 AM - 10:00 PM',
+  },
+  {
+    id: '2',
+    nombre: 'Sabores del Pacífico',
+    descripcion: 'Frutos del mar frescos y ceviches auténticos del Pacífico colombiano.',
+    tipo: 'Mariscos',
+    ubicacion: 'Centro',
+    imagen: 'https://via.placeholder.com/400x300?text=Sabores+Pacifico',
+    rating: 4.8,
+    resenas: 312,
+    rango_precio: '$$$',
+    especialidad: 'Ceviches, Camarones',
+    horario: '12:00 PM - 11:00 PM',
+  },
+  {
+    id: '3',
+    nombre: 'Casa de la Arepa',
+    descripcion: 'Arepas gourmet con ingredientes locales y creativos.',
+    tipo: 'Casual',
+    ubicacion: 'San Alejo',
+    imagen: 'https://via.placeholder.com/400x300?text=Casa+Arepa',
+    rating: 4.5,
+    resenas: 189,
+    rango_precio: '$',
+    especialidad: 'Arepas, Empanadas',
+    horario: '8:00 AM - 9:00 PM',
+  },
+  {
+    id: '4',
+    nombre: 'Tierra Fría',
+    descripcion: 'Cocina contemporánea con influencias locales e internacionales.',
+    tipo: 'Contemporánea',
+    ubicacion: 'Cristo Rey',
+    imagen: 'https://via.placeholder.com/400x300?text=Tierra+Fria',
+    rating: 4.9,
+    resenas: 425,
+    rango_precio: '$$$',
+    especialidad: 'Fusión, Chef Menu',
+    horario: '6:00 PM - 11:30 PM',
+  },
+  {
+    id: '5',
+    nombre: 'Verde y Fresco',
+    descripcion: 'Comida saludable, orgánica y opciones vegetarianas.',
+    tipo: 'Saludable',
+    ubicacion: 'Centro',
+    imagen: 'https://via.placeholder.com/400x300?text=Verde+Fresco',
+    rating: 4.6,
+    resenas: 156,
+    rango_precio: '$$',
+    especialidad: 'Bowls, Smoothies',
+    horario: '7:00 AM - 7:00 PM',
+  },
+  {
+    id: '6',
+    nombre: 'Dulce Tentación',
+    descripcion: 'Postres artesanales y café especializado de la región.',
+    tipo: 'Postres',
+    ubicacion: 'San Antonio',
+    imagen: 'https://via.placeholder.com/400x300?text=Dulce+Tentacion',
+    rating: 4.8,
+    resenas: 278,
+    rango_precio: '$$',
+    especialidad: 'Postres, Café',
+    horario: '9:00 AM - 8:00 PM',
+  },
+];
+
+const tipos = ['Todos', 'Típica', 'Mariscos', 'Casual', 'Contemporánea', 'Saludable', 'Postres'];
+---
+
+<Layout title="Gastronomía - LoCALIzate">
+  <NavBar />
+
+  <main class="gastronomia">
+    <div class="gastronomia-header">
+      <div class="container py-xl">
+        <ThemedText variant="headline-lg" class="gastronomia-title">
+          🍽️ Gastronomía Local
+        </ThemedText>
+        <ThemedText variant="body-lg" color="muted" class="gastronomia-subtitle">
+          Descubre los mejores restaurantes y sabores de Cali
+        </ThemedText>
+      </div>
+    </div>
+
+    <section class="gastronomia-content">
+      <div class="container">
+        <!-- Filtros -->
+        <div class="gastronomia-filters">
+          <input
+            type="text"
+            placeholder="Buscar restaurantes..."
+            class="search-input"
+          />
+          <div class="tipo-filters">
+            {
+              tipos.map((tipo) => (
+                <button class={`tipo-btn ${tipo === 'Todos' ? 'active' : ''}`}>
+                  {tipo}
+                </button>
+              ))
+            }
+          </div>
+        </div>
+
+        <!-- Grid de Restaurantes -->
+        <div class="restaurantes-grid">
+          {
+            restaurantes.map((rest) => (
+              <Card variant="elevated" padding="0" hoverable class="restaurante-card">
+                <a href={`/restaurante/${rest.id}`} class="restaurante-card-link">
+                  <div class="restaurante-image">
+                    <img src={rest.imagen} alt={rest.nombre} />
+                    <div class="restaurante-tipo">{rest.tipo}</div>
+                  </div>
+
+                  <div class="restaurante-info">
+                    <ThemedText variant="title-md" as="h3">
+                      {rest.nombre}
+                    </ThemedText>
+
+                    <ThemedText variant="body-sm" color="muted" class="restaurante-desc">
+                      {rest.descripcion}
+                    </ThemedText>
+
+                    <div class="restaurante-details">
+                      <div class="detail">
+                        <span class="icon">⭐</span>
+                        <ThemedText variant="label-sm">
+                          {rest.rating.toFixed(1)} ({rest.resenas})
+                        </ThemedText>
+                      </div>
+                      <div class="detail">
+                        <span class="icon">💰</span>
+                        <ThemedText variant="label-sm">{rest.rango_precio}</ThemedText>
+                      </div>
+                      <div class="detail">
+                        <span class="icon">📍</span>
+                        <ThemedText variant="label-sm">{rest.ubicacion}</ThemedText>
+                      </div>
+                    </div>
+
+                    <ThemedText variant="label-sm" color="primary" class="especialidad">
+                      Especialidad: {rest.especialidad}
+                    </ThemedText>
+
+                    <Button label="Ver Menú" variant="text" size="sm" class="view-btn" />
+                  </div>
+                </a>
+              </Card>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .gastronomia {
+    min-height: 100vh;
+  }
+
+  .gastronomia-header {
+    background: linear-gradient(135deg, var(--color-secondary-container), var(--color-tertiary-container));
+    border-bottom: 2px solid var(--color-secondary);
+  }
+
+  .gastronomia-title {
+    margin: 0;
+  }
+
+  .gastronomia-subtitle {
+    margin: 0;
+    margin-top: var(--space-md);
+  }
+
+  .gastronomia-content {
+    padding: var(--space-xxl) 0;
+  }
+
+  .gastronomia-filters {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xxl);
+  }
+
+  .search-input {
+    width: 100%;
+    padding: var(--space-md) var(--space-lg);
+    border: 2px solid var(--color-outline-variant);
+    border-radius: var(--radius-lg);
+    font-family: var(--font-body);
+    font-size: var(--text-body-md);
+    color: var(--color-on-surface);
+    background-color: var(--color-surface);
+    transition: all var(--transition-fast);
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--color-secondary);
+    box-shadow: 0 0 0 3px rgba(187, 0, 32, 0.1);
+  }
+
+  .tipo-filters {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+  }
+
+  .tipo-btn {
+    padding: var(--space-sm) var(--space-lg);
+    border: 2px solid var(--color-outline-variant);
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    font-family: var(--font-body);
+    font-size: var(--text-label-md);
+    font-weight: var(--text-label-md-weight);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .tipo-btn:hover {
+    border-color: var(--color-secondary);
+    color: var(--color-secondary);
+  }
+
+  .tipo-btn.active {
+    background-color: var(--color-secondary);
+    color: var(--color-on-secondary);
+    border-color: var(--color-secondary);
+  }
+
+  .restaurantes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--space-lg);
+  }
+
+  .restaurante-card {
+    overflow: hidden;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .restaurante-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .restaurante-image {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background-color: var(--color-surface-container);
+  }
+
+  .restaurante-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-normal);
+  }
+
+  .restaurante-card:hover .restaurante-image img {
+    transform: scale(1.08);
+  }
+
+  .restaurante-tipo {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    padding: var(--space-xs) var(--space-md);
+    background-color: var(--color-secondary);
+    color: var(--color-on-secondary);
+    border-radius: var(--radius-full);
+    font-size: var(--text-label-sm);
+    font-weight: var(--text-label-sm-weight);
+  }
+
+  .restaurante-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    flex: 1;
+  }
+
+  .restaurante-info h3 {
+    margin: 0;
+  }
+
+  .restaurante-desc {
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .restaurante-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+  }
+
+  .detail {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  .detail .icon {
+    font-size: 16px;
+  }
+
+  .especialidad {
+    display: block;
+    margin-top: auto;
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-outline-variant);
+  }
+
+  .view-btn {
+    margin-top: var(--space-sm);
+  }
+
+  @media (max-width: 768px) {
+    .restaurantes-grid {
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+  }
+
+  @media (max-width: 480px) {
+    .restaurantes-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  const filterBtns = document.querySelectorAll('.tipo-btn');
+  filterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+</script>

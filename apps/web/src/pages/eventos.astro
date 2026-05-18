@@ -1,0 +1,366 @@
+---
+import Layout from '../layouts/Layout.astro';
+import NavBar from '../components/ui/NavBar.astro';
+import Footer from '../components/ui/Footer.astro';
+import ThemedText from '../components/ui/ThemedText.astro';
+import Card from '../components/ui/Card.astro';
+import Badge from '../components/ui/Badge.astro';
+import Button from '../components/ui/Button.astro';
+
+const eventos = [
+  {
+    id: '1',
+    nombre: 'Festival de Salsa 2026',
+    descripcion: 'El evento más esperado del año con presentaciones de orquestas, competencias y mucha música.',
+    fecha_inicio: '2026-06-15',
+    fecha_fin: '2026-06-20',
+    ubicacion: 'Parque Belalcázar',
+    imagen: 'https://via.placeholder.com/400x250?text=Festival+Salsa',
+    categoria: 'Música',
+    precio: 'Entrada libre',
+    asistentes: 5000,
+  },
+  {
+    id: '2',
+    nombre: 'Feria Gastronómica del Pacífico',
+    descripcion: 'Prueba lo mejor de la cocina caleña y del Pacífico colombiano en un solo lugar.',
+    fecha_inicio: '2026-07-10',
+    fecha_fin: '2026-07-15',
+    ubicacion: 'Centro Comercial Premium',
+    imagen: 'https://via.placeholder.com/400x250?text=Gastronomia',
+    categoria: 'Gastronomía',
+    precio: 'Entrada: $5.000',
+    asistentes: 3000,
+  },
+  {
+    id: '3',
+    nombre: 'Concierto de Artistas Locales',
+    descripcion: 'Apoya a los talentos musicales emergentes de Cali con presentaciones en vivo.',
+    fecha_inicio: '2026-08-05',
+    fecha_fin: '2026-08-05',
+    ubicacion: 'Teatro Municipal',
+    imagen: 'https://via.placeholder.com/400x250?text=Concierto',
+    categoria: 'Música',
+    precio: 'Entrada: $15.000',
+    asistentes: 2000,
+  },
+  {
+    id: '4',
+    nombre: 'Exhibición de Arte Urbano',
+    descripcion: 'Conoce el trabajo de artistas de graffiti y street art de Colombia.',
+    fecha_inicio: '2026-07-22',
+    fecha_fin: '2026-08-10',
+    ubicacion: 'San Antonio - Galería Abierta',
+    imagen: 'https://via.placeholder.com/400x250?text=Arte+Urbano',
+    categoria: 'Arte',
+    precio: 'Entrada libre',
+    asistentes: 1500,
+  },
+  {
+    id: '5',
+    nombre: 'Cali Running Festival',
+    descripcion: 'Maratón de 10km, 5km y caminata familiar por las principales vías de Cali.',
+    fecha_inicio: '2026-09-12',
+    fecha_fin: '2026-09-12',
+    ubicacion: 'Salida Parque Bolívar',
+    imagen: 'https://via.placeholder.com/400x250?text=Running',
+    categoria: 'Deporte',
+    precio: 'Inscripción: $20.000',
+    asistentes: 8000,
+  },
+  {
+    id: '6',
+    nombre: 'Festival de Cine Latinoamericano',
+    descripcion: 'Proyecciones de películas de cineastas de toda América Latina.',
+    fecha_inicio: '2026-10-01',
+    fecha_fin: '2026-10-10',
+    ubicacion: 'Centro Cultural',
+    imagen: 'https://via.placeholder.com/400x250?text=Cine',
+    categoria: 'Cine',
+    precio: 'Entrada: $8.000',
+    asistentes: 3500,
+  },
+];
+
+const categorias = ['Todos', 'Música', 'Gastronomía', 'Arte', 'Deporte', 'Cine'];
+
+const categoryEmojis: Record<string, string> = {
+  'Música': '🎵',
+  'Gastronomía': '🍽️',
+  'Arte': '🎨',
+  'Deporte': '⚽',
+  'Cine': '🎬',
+};
+
+const formatDate = (date: string) => {
+  return new Date(date).toLocaleDateString('es-CO', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+};
+---
+
+<Layout title="Eventos - LoCALIzate">
+  <NavBar />
+
+  <main class="eventos">
+    <div class="eventos-header">
+      <div class="container py-xl">
+        <ThemedText variant="headline-lg" class="eventos-title">
+          🎉 Próximos Eventos
+        </ThemedText>
+        <ThemedText variant="body-lg" color="muted" class="eventos-subtitle">
+          Descubre los mejores eventos en Cali
+        </ThemedText>
+      </div>
+    </div>
+
+    <section class="eventos-content">
+      <div class="container">
+        <!-- Filtros -->
+        <div class="eventos-filters">
+          <div class="filter-chips">
+            {
+              categorias.map((cat) => (
+                <button class={`chip ${cat === 'Todos' ? 'active' : ''}`}>
+                  {categoryEmojis[cat] || ''} {cat}
+                </button>
+              ))
+            }
+          </div>
+        </div>
+
+        <!-- Grid de eventos -->
+        <div class="eventos-grid">
+          {
+            eventos.map((evento) => (
+              <Card variant="elevated" padding="0" hoverable class="evento-card">
+                <a href={`/evento/${evento.id}`} class="evento-card-link">
+                  <div class="evento-image">
+                    <img src={evento.imagen} alt={evento.nombre} />
+                    <div class="evento-badge">
+                      <Badge color="secondary">{evento.categoria}</Badge>
+                    </div>
+                  </div>
+
+                  <div class="evento-info">
+                    <ThemedText variant="title-md" as="h3" class="evento-title">
+                      {evento.nombre}
+                    </ThemedText>
+
+                    <ThemedText
+                      variant="body-sm"
+                      color="muted"
+                      class="evento-description"
+                    >
+                      {evento.descripcion}
+                    </ThemedText>
+
+                    <div class="evento-meta">
+                      <div class="meta-item">
+                        <span class="meta-icon">📅</span>
+                        <ThemedText variant="label-sm">
+                          {formatDate(evento.fecha_inicio)}
+                        </ThemedText>
+                      </div>
+                      <div class="meta-item">
+                        <span class="meta-icon">📍</span>
+                        <ThemedText variant="label-sm">
+                          {evento.ubicacion}
+                        </ThemedText>
+                      </div>
+                    </div>
+
+                    <div class="evento-footer">
+                      <ThemedText variant="label-lg" color="primary">
+                        {evento.precio}
+                      </ThemedText>
+                      <Button label="Ver más" variant="text" size="sm" />
+                    </div>
+                  </div>
+                </a>
+              </Card>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .eventos {
+    min-height: 100vh;
+  }
+
+  .eventos-header {
+    background: linear-gradient(135deg, var(--color-secondary-container), var(--color-primary-container));
+    border-bottom: 2px solid var(--color-secondary);
+  }
+
+  .eventos-title {
+    margin: 0;
+  }
+
+  .eventos-subtitle {
+    margin: 0;
+    margin-top: var(--space-md);
+  }
+
+  .eventos-content {
+    padding: var(--space-xxl) 0;
+  }
+
+  .eventos-filters {
+    margin-bottom: var(--space-xxl);
+  }
+
+  .filter-chips {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+  }
+
+  .chip {
+    padding: var(--space-sm) var(--space-lg);
+    border: 2px solid var(--color-outline-variant);
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    font-family: var(--font-body);
+    font-size: var(--text-label-md);
+    font-weight: var(--text-label-md-weight);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .chip:hover {
+    border-color: var(--color-secondary);
+    color: var(--color-secondary);
+  }
+
+  .chip.active {
+    background-color: var(--color-secondary);
+    color: var(--color-on-secondary);
+    border-color: var(--color-secondary);
+  }
+
+  .eventos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--space-lg);
+  }
+
+  .evento-card {
+    overflow: hidden;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .evento-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .evento-image {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    background-color: var(--color-surface-container);
+  }
+
+  .evento-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-normal);
+  }
+
+  .evento-card:hover .evento-image img {
+    transform: scale(1.08);
+  }
+
+  .evento-badge {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+  }
+
+  .evento-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    flex: 1;
+  }
+
+  .evento-title {
+    margin: 0;
+  }
+
+  .evento-description {
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .evento-meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+    background-color: var(--color-surface-container-low);
+    border-radius: var(--radius-md);
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .meta-icon {
+    font-size: 16px;
+  }
+
+  .evento-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-outline-variant);
+  }
+
+  @media (max-width: 768px) {
+    .eventos-grid {
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+  }
+
+  @media (max-width: 480px) {
+    .eventos-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  const chips = document.querySelectorAll('.chip');
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      chips.forEach((c) => c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+</script>

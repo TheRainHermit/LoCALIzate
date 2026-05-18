@@ -1,0 +1,184 @@
+---
+import Card from './ui/Card.astro';
+import Badge from './ui/Badge.astro';
+import ThemedText from './ui/ThemedText.astro';
+
+interface Props {
+  id: string;
+  nombre: string;
+  zona: string;
+  descripcion_corta: string;
+  imagen: string;
+  categoria: string;
+  rating?: number;
+  resenas_count?: number;
+  distancia?: number;
+}
+
+const {
+  id,
+  nombre,
+  zona,
+  descripcion_corta,
+  imagen,
+  categoria,
+  rating = 4.5,
+  resenas_count = 0,
+  distancia,
+} = Astro.props;
+
+const categoryColors: Record<string, 'primary' | 'secondary' | 'tertiary'> = {
+  cultura: 'primary',
+  gastronomia: 'secondary',
+  naturaleza: 'tertiary',
+  entretenimiento: 'secondary',
+  deporte: 'tertiary',
+};
+
+const badgeColor = categoryColors[categoria.toLowerCase()] || 'primary';
+---
+
+<Card variant="elevated" hoverable class="location-card">
+  <a href={`/lugar/${id}`} class="location-card-link">
+    <!-- Imagen -->
+    <div class="location-image">
+      <img src={imagen} alt={nombre} loading="lazy" />
+    </div>
+
+    <!-- Info -->
+    <div class="location-info">
+      <!-- Header -->
+      <div class="location-header">
+        <ThemedText variant="title-md" as="h3">
+          {nombre}
+        </ThemedText>
+        <Badge color={badgeColor} size="sm">
+          {categoria}
+        </Badge>
+      </div>
+
+      <!-- Zona -->
+      <ThemedText variant="body-sm" color="muted" class="location-zona">
+        📍 {zona}
+      </ThemedText>
+
+      <!-- Descripción -->
+      <ThemedText variant="body-sm" class="location-description">
+        {descripcion_corta}
+      </ThemedText>
+
+      <!-- Footer -->
+      <div class="location-footer">
+        {rating > 0 && (
+          <div class="location-rating">
+            <span class="stars">{'⭐'.repeat(Math.round(rating))}</span>
+            <ThemedText variant="label-sm" color="muted">
+              {rating.toFixed(1)} • {resenas_count} reseñas
+            </ThemedText>
+          </div>
+        )}
+        {distancia && (
+          <ThemedText variant="label-sm" color="primary">
+            {distancia}m
+          </ThemedText>
+        )}
+      </div>
+    </div>
+  </a>
+</Card>
+
+<style>
+  .location-card {
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .location-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .location-image {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    background-color: var(--color-surface-container);
+  }
+
+  .location-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-normal);
+  }
+
+  .location-card:hover .location-image img {
+    transform: scale(1.05);
+  }
+
+  .location-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    flex: 1;
+  }
+
+  .location-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+
+  .location-header h3 {
+    margin: 0;
+    flex: 1;
+  }
+
+  .location-zona {
+    display: block;
+  }
+
+  .location-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    color: var(--color-on-surface-variant);
+  }
+
+  .location-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-md);
+    margin-top: auto;
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-outline-variant);
+  }
+
+  .location-rating {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  .stars {
+    font-size: 16px;
+  }
+
+  @media (max-width: 768px) {
+    .location-info {
+      gap: var(--space-sm);
+      padding: var(--space-md);
+    }
+
+    .location-image {
+      height: 150px;
+    }
+  }
+</style>

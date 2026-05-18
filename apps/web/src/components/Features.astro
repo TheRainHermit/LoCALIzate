@@ -1,42 +1,137 @@
 ---
-const features = [
-  {
-    icon: "📸",
-    title: "Reconocimiento Visual",
-    desc: "Identifica monumentos y lugares emblemáticos usando la cámara de tu celular.",
-  },
-  {
-    icon: "🔊",
-    title: "Narración en Voz Caleña",
-    desc: "Recibe historias y datos curiosos narrados con acento y chispa local.",
-  },
-  {
-    icon: "🗺️",
-    title: "Rutas Inteligentes",
-    desc: "Sugerencias de rutas y puntos de interés según tus gustos y ubicación.",
-  },
-  {
-    icon: "🍽️",
-    title: "Recomendaciones Gastronómicas",
-    desc: "Descubre dónde probar los mejores sabores caleños cerca de ti.",
-  },
-  {
-    icon: "📲",
-    title: "Alertas Contextuales",
-    desc: "Recibe notificaciones sobre eventos, seguridad y datos útiles en tiempo real.",
-  },
-];
+import Card from './ui/Card.astro';
+import ThemedText from './ui/ThemedText.astro';
+
+interface Feature {
+  icon: string;
+  title: string;
+  desc: string;
+}
+
+interface Props {
+  title?: string;
+  features?: Feature[];
+}
+
+const {
+  title = "¿Qué hace único a CaliGuía?",
+  features = [
+    {
+      icon: "📸",
+      title: "Reconocimiento Visual",
+      desc: "Identifica monumentos y lugares emblemáticos usando la cámara de tu celular.",
+    },
+    {
+      icon: "🔊",
+      title: "Narración en Voz Caleña",
+      desc: "Recibe historias y datos curiosos narrados con acento y chispa local.",
+    },
+    {
+      icon: "🗺️",
+      title: "Rutas Inteligentes",
+      desc: "Sugerencias de rutas y puntos de interés según tus gustos y ubicación.",
+    },
+    {
+      icon: "🍽️",
+      title: "Recomendaciones Gastronómicas",
+      desc: "Descubre dónde probar los mejores sabores caleños cerca de ti.",
+    },
+    {
+      icon: "📲",
+      title: "Alertas Contextuales",
+      desc: "Recibe notificaciones sobre eventos, seguridad y datos útiles en tiempo real.",
+    },
+    {
+      icon: "🤖",
+      title: "IA Conversacional",
+      desc: "Asistente inteligente que entiende preguntas en lenguaje natural.",
+    },
+  ],
+} = Astro.props;
 ---
 
-<section class="py-8 bg-surface-container">
-  <h2 class="text-2xl font-bold text-primary mb-6 text-center">¿Qué hace único a CaliGuía?</h2>
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-    {features.map(f => (
-      <div class="bg-surface rounded-xl shadow p-6 flex flex-col items-center text-center">
-        <div class="text-4xl mb-3">{f.icon}</div>
-        <div class="font-semibold text-lg text-on-surface mb-1">{f.title}</div>
-        <div class="text-on-surface-variant text-sm">{f.desc}</div>
-      </div>
-    ))}
+<section class="features">
+  <div class="container">
+    <ThemedText variant="headline-md" center class="features-title">
+      {title}
+    </ThemedText>
+
+    <div class="features-grid">
+      {
+        features.map((feature) => (
+          <Card variant="filled" padding="lg" class="feature-card">
+            <div class="feature-icon">{feature.icon}</div>
+            <ThemedText variant="title-md" as="h3" center>
+              {feature.title}
+            </ThemedText>
+            <ThemedText variant="body-sm" color="muted" center class="feature-desc">
+              {feature.desc}
+            </ThemedText>
+          </Card>
+        ))
+      }
+    </div>
   </div>
 </section>
+
+<style>
+  .features {
+    background-color: var(--color-surface-container);
+    padding: var(--space-xxl) 0;
+  }
+
+  .features-title {
+    margin: 0 0 var(--space-xl) 0;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-lg);
+  }
+
+  .feature-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-md);
+    transition: all var(--transition-normal);
+  }
+
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .feature-icon {
+    font-size: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .feature-card h3 {
+    margin: 0;
+  }
+
+  .feature-desc {
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 768px) {
+    .features {
+      padding: var(--space-xl) 0;
+    }
+
+    .features-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-md);
+    }
+
+    .feature-icon {
+      font-size: 40px;
+    }
+  }
+</style>

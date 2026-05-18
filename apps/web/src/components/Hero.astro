@@ -1,17 +1,118 @@
 ---
-const { title = "CaliGuía: El Asistente Turístico Inteligente", subtitle = "La ciudad te habla, te guía y te sorprende con sabor local." } = Astro.props;
+import Button from './ui/Button.astro';
+import ThemedText from './ui/ThemedText.astro';
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+}
+
+const {
+  title = "CaliGuía: El Asistente Turístico Inteligente",
+  subtitle = "La ciudad te habla, te guía y te sorprende con sabor local.",
+  ctaLabel = "Descubre cómo funciona",
+  ctaHref = "#features",
+} = Astro.props;
 ---
 
-<section class="relative py-20 px-4 bg-gradient-to-b from-surface-container-highest to-surface-container flex flex-col items-center justify-center text-center overflow-hidden">
-  <div class="absolute inset-0 pointer-events-none opacity-10" style="background-image: radial-gradient(#ffb300 1.5px, transparent 1.5px), radial-gradient(#bb0020 1.5px, #fff8f3 1.5px); background-size: 40px 40px; background-position: 0 0, 20px 20px;"></div>
-  <h1 class="text-4xl md:text-5xl font-extrabold text-primary mb-4 leading-tight drop-shadow-lg z-10">
-    {title}
-  </h1>
-  <p class="text-lg md:text-2xl text-on-surface-variant mb-8 max-w-2xl mx-auto z-10">
-    {subtitle}
-  </p>
-  <a href="#features" class="inline-block px-8 py-3 rounded-full bg-primary text-white font-semibold text-lg shadow-lg hover:bg-primary-container transition z-10">
-    Descubre cómo funciona
-  </a>
-  <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[120vw] h-32 bg-gradient-to-t from-surface-container-highest to-transparent pointer-events-none"></div>
+<section class="hero">
+  <div class="hero-background"></div>
+  <div class="hero-content container">
+    <ThemedText variant="headline-xl" center class="hero-title">
+      {title}
+    </ThemedText>
+    <ThemedText variant="body-lg" color="muted" center class="hero-subtitle">
+      {subtitle}
+    </ThemedText>
+    <div class="hero-cta">
+      <Button label={ctaLabel} size="lg" href={ctaHref} />
+    </div>
+  </div>
+  <div class="hero-gradient"></div>
 </section>
+
+<style>
+  .hero {
+    position: relative;
+    padding: var(--space-xxl) var(--space-lg);
+    background: linear-gradient(
+      to bottom,
+      var(--color-surface-container-highest),
+      var(--color-surface-container)
+    );
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    min-height: 500px;
+  }
+
+  .hero-background {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.1;
+    background-image: radial-gradient(var(--color-primary) 1.5px, transparent 1.5px),
+      radial-gradient(var(--color-secondary) 1.5px, var(--color-surface) 1.5px);
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-lg);
+    max-width: 800px;
+  }
+
+  .hero-title {
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .hero-subtitle {
+    margin: 0;
+    max-width: 600px;
+  }
+
+  .hero-cta {
+    margin-top: var(--space-lg);
+  }
+
+  .hero-gradient {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120vw;
+    height: 128px;
+    background: linear-gradient(
+      to top,
+      var(--color-surface-container-highest),
+      transparent
+    );
+    pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    .hero {
+      min-height: 400px;
+      padding: var(--space-xl) var(--space-md);
+    }
+
+    .hero-title {
+      font-size: var(--text-headline-lg);
+    }
+
+    .hero-subtitle {
+      font-size: var(--text-body-md);
+    }
+  }
+</style>

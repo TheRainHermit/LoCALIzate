@@ -1,0 +1,469 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import NavBar from '../../components/ui/NavBar.astro';
+import Footer from '../../components/ui/Footer.astro';
+import ThemedText from '../../components/ui/ThemedText.astro';
+import Card from '../../components/ui/Card.astro';
+import Button from '../../components/ui/Button.astro';
+import Badge from '../../components/ui/Badge.astro';
+
+const { id } = Astro.params;
+
+// Mock data
+const lugar = {
+  id: id || '1',
+  nombre: 'Cristo Rey',
+  zona: 'San Antonio',
+  descripcion_corta: 'Monumento icónico que domina la ciudad desde lo alto con vistas espectaculares.',
+  descripcion_completa:
+    'Cristo Rey es el monumento más emblemático de Cali. Ubicado en lo alto de la montaña de San Antonio, ofrece vistas panorámicas de toda la ciudad. Construido en 1954, esta estatua de 26 metros representa el espíritu y la fe de los caleños. Es un lugar perfecto para capturar fotografías, entender la historia de la ciudad y disfrutar de la brisa montañosa.',
+  imagen: 'https://via.placeholder.com/800x400?text=Cristo+Rey',
+  imagenes: [
+    'https://via.placeholder.com/800x400?text=Cristo+Rey+1',
+    'https://via.placeholder.com/800x400?text=Cristo+Rey+2',
+    'https://via.placeholder.com/800x400?text=Cristo+Rey+3',
+  ],
+  categoria: 'Cultura',
+  rating: 4.8,
+  resenas_count: 324,
+  entrada: {
+    costo: 'Gratis',
+    incluye: 'Acceso a la zona de mirador',
+  },
+  horarios: {
+    apertura: '8:00 AM',
+    cierre: '6:00 PM',
+    dias: 'Todos los días',
+  },
+  contacto: {
+    telefono: '+57 2 555 5555',
+    email: 'info@cristorey.co',
+    direccion: 'Carrera 15 # 5-50, San Antonio, Cali',
+  },
+  audioGuia: {
+    disponible: true,
+    duracion: '12 min',
+    url: '/audio/cristo-rey.mp3',
+  },
+  resenas: [
+    {
+      autor: 'María García',
+      fecha: '2026-05-10',
+      rating: 5,
+      texto: 'Lugar espectacular con vistas increíbles de toda la ciudad. Recomendado 100%.',
+    },
+    {
+      autor: 'Juan López',
+      fecha: '2026-05-08',
+      rating: 4,
+      texto: 'Hermoso lugar para fotografía. La subida es un poco cansada pero vale la pena.',
+    },
+  ],
+  lugaresRelacionados: [
+    {
+      id: '2',
+      nombre: 'San Antonio',
+      zona: 'Centro',
+      descripcion_corta: 'Barrio bohemio lleno de arte y galerías',
+      imagen: 'https://via.placeholder.com/400x300?text=San+Antonio',
+      categoria: 'Cultura',
+    },
+    {
+      id: '4',
+      nombre: 'La Ermita',
+      zona: 'Centro',
+      descripcion_corta: 'Iglesia colonial histórica',
+      imagen: 'https://via.placeholder.com/400x300?text=La+Ermita',
+      categoria: 'Cultura',
+    },
+  ],
+};
+---
+
+<Layout title={`${lugar.nombre} - LoCALIzate`}>
+  <NavBar />
+
+  <main class="lugar-detail">
+    <!-- Galería de imágenes -->
+    <div class="lugar-gallery">
+      <img src={lugar.imagen} alt={lugar.nombre} class="gallery-main" />
+      {
+        lugar.imagenes && lugar.imagenes.length > 0 && (
+          <div class="gallery-thumbnails">
+            {lugar.imagenes.map((img) => (
+              <img src={img} alt={lugar.nombre} class="thumbnail" />
+            ))}
+          </div>
+        )
+      }
+    </div>
+
+    <div class="container lugar-content py-xxl">
+      <div class="lugar-header">
+        <div>
+          <ThemedText variant="headline-lg" class="lugar-title">
+            {lugar.nombre}
+          </ThemedText>
+          <div class="lugar-meta">
+            <Badge color="primary">{lugar.categoria}</Badge>
+            <ThemedText variant="body-sm" color="muted">
+              📍 {lugar.zona}
+            </ThemedText>
+          </div>
+        </div>
+        <div class="lugar-rating">
+          <div class="stars">{'⭐'.repeat(Math.round(lugar.rating))}</div>
+          <ThemedText variant="body-md">
+            {lugar.rating.toFixed(1)} • {lugar.resenas_count} reseñas
+          </ThemedText>
+        </div>
+      </div>
+
+      <!-- Descripción -->
+      <Card variant="filled" padding="lg" class="mt-xl">
+        <ThemedText variant="body-md" class="lugar-description">
+          {lugar.descripcion_completa}
+        </ThemedText>
+      </Card>
+
+      <!-- Información Práctica -->
+      <div class="lugar-info-grid mt-xl">
+        <Card variant="outlined" padding="lg">
+          <ThemedText variant="title-sm" class="info-title">
+            💰 Entrada
+          </ThemedText>
+          <ThemedText variant="body-sm" class="mt-md">
+            <strong>{lugar.entrada.costo}</strong>
+          </ThemedText>
+          <ThemedText variant="label-sm" color="muted">
+            {lugar.entrada.incluye}
+          </ThemedText>
+        </Card>
+
+        <Card variant="outlined" padding="lg">
+          <ThemedText variant="title-sm" class="info-title">
+            🕐 Horarios
+          </ThemedText>
+          <ThemedText variant="body-sm" class="mt-md">
+            {lugar.horarios.apertura} - {lugar.horarios.cierre}
+          </ThemedText>
+          <ThemedText variant="label-sm" color="muted">
+            {lugar.horarios.dias}
+          </ThemedText>
+        </Card>
+
+        <Card variant="outlined" padding="lg">
+          <ThemedText variant="title-sm" class="info-title">
+            📞 Contacto
+          </ThemedText>
+          <a href={`tel:${lugar.contacto.telefono}`} class="contact-link">
+            <ThemedText variant="body-sm">{lugar.contacto.telefono}</ThemedText>
+          </a>
+          <a href={`mailto:${lugar.contacto.email}`} class="contact-link">
+            <ThemedText variant="body-sm">{lugar.contacto.email}</ThemedText>
+          </a>
+        </Card>
+      </div>
+
+      <!-- Audio Guía -->
+      {
+        lugar.audioGuia?.disponible && (
+          <Card variant="elevated" padding="lg" class="mt-xl audio-guide">
+            <div class="audio-guide-content">
+              <div>
+                <ThemedText variant="title-md">🎧 Guía de Audio Disponible</ThemedText>
+                <ThemedText variant="label-sm" color="muted" class="mt-sm">
+                  Duración: {lugar.audioGuia.duracion}
+                </ThemedText>
+              </div>
+              <Button label="▶️ Escuchar" size="md" />
+            </div>
+          </Card>
+        )
+      }
+
+      <!-- Reseñas -->
+      <div class="mt-xl">
+        <ThemedText variant="headline-md" class="mt-lg mb-lg">
+          Reseñas de Visitantes
+        </ThemedText>
+        {lugar.resenas.map((resena) => (
+          <Card variant="filled" padding="lg" class="review-card mb-md">
+            <div class="review-header">
+              <div>
+                <ThemedText variant="title-sm">{resena.autor}</ThemedText>
+                <ThemedText variant="label-sm" color="muted">
+                  {new Date(resena.fecha).toLocaleDateString('es-CO')}
+                </ThemedText>
+              </div>
+              <div class="review-stars">{'⭐'.repeat(resena.rating)}</div>
+            </div>
+            <ThemedText variant="body-sm" class="review-text">
+              {resena.texto}
+            </ThemedText>
+          </Card>
+        ))}
+      </div>
+
+      <!-- Lugares relacionados -->
+      {
+        lugar.lugaresRelacionados && lugar.lugaresRelacionados.length > 0 && (
+          <div class="mt-xl">
+            <ThemedText variant="headline-md" class="mb-lg">
+              Lugares Relacionados
+            </ThemedText>
+            <div class="relacionados-grid">
+              {lugar.lugaresRelacionados.map((l) => (
+                <Card variant="filled" padding="0" hoverable class="relacionado-card">
+                  <a href={`/lugar/${l.id}`} class="relacionado-link">
+                    <img src={l.imagen} alt={l.nombre} />
+                    <div class="relacionado-info">
+                      <ThemedText variant="title-sm">{l.nombre}</ThemedText>
+                      <ThemedText variant="label-sm" color="muted">
+                        {l.zona}
+                      </ThemedText>
+                    </div>
+                  </a>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )
+      }
+
+      <!-- CTA -->
+      <div class="lugar-cta mt-xl">
+        <Button label="📍 Cómo llegar" size="lg" href="#" />
+        <Button label="❤️ Guardar" variant="outlined" size="lg" />
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .lugar-detail {
+    min-height: 100vh;
+  }
+
+  .lugar-gallery {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    background-color: var(--color-surface-container);
+  }
+
+  .gallery-main {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .gallery-thumbnails {
+    display: flex;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+    overflow-x: auto;
+    background-color: var(--color-surface-container-high);
+  }
+
+  .thumbnail {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: transform var(--transition-fast);
+    flex-shrink: 0;
+  }
+
+  .thumbnail:hover {
+    transform: scale(1.05);
+  }
+
+  .lugar-content {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .lugar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-xl);
+    margin-bottom: var(--space-xl);
+  }
+
+  .lugar-title {
+    margin: 0;
+  }
+
+  .lugar-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+  }
+
+  .lugar-rating {
+    text-align: right;
+  }
+
+  .stars {
+    font-size: 24px;
+    margin-bottom: var(--space-sm);
+  }
+
+  .lugar-description {
+    margin: 0;
+    line-height: 1.8;
+  }
+
+  .lugar-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-lg);
+  }
+
+  .info-title {
+    margin: 0;
+  }
+
+  .contact-link {
+    display: block;
+    text-decoration: none;
+    color: var(--color-primary);
+    margin-top: var(--space-sm);
+    transition: all var(--transition-fast);
+  }
+
+  .contact-link:hover {
+    text-decoration: underline;
+  }
+
+  .audio-guide {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .audio-guide-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-lg);
+    width: 100%;
+  }
+
+  .review-card {
+    margin-bottom: var(--space-md);
+  }
+
+  .review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-md);
+  }
+
+  .review-stars {
+    font-size: 18px;
+  }
+
+  .review-text {
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .relacionados-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-lg);
+  }
+
+  .relacionado-card {
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .relacionado-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .relacionado-link img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+  }
+
+  .relacionado-info {
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .lugar-cta {
+    display: flex;
+    gap: var(--space-lg);
+    flex-wrap: wrap;
+  }
+
+  .mt-xl {
+    margin-top: var(--space-xl);
+  }
+
+  .mt-lg {
+    margin-top: var(--space-lg);
+  }
+
+  .mt-md {
+    margin-top: var(--space-md);
+  }
+
+  .mt-sm {
+    margin-top: var(--space-sm);
+  }
+
+  .mb-lg {
+    margin-bottom: var(--space-lg);
+  }
+
+  .mb-md {
+    margin-bottom: var(--space-md);
+  }
+
+  @media (max-width: 768px) {
+    .lugar-gallery {
+      height: 300px;
+    }
+
+    .lugar-header {
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    .lugar-rating {
+      text-align: left;
+    }
+
+    .audio-guide-content {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .lugar-cta {
+      flex-direction: column;
+    }
+
+    .lugar-cta :global(a),
+    .lugar-cta :global(button) {
+      width: 100%;
+    }
+  }
+</style>

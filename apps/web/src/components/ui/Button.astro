@@ -1,0 +1,49 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'button'> {
+  variant?: 'filled' | 'outlined' | 'tonal' | 'text';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  label: string;
+  icon?: string;
+  href?: string;
+}
+
+const {
+  variant = 'filled',
+  size = 'md',
+  disabled = false,
+  label,
+  icon,
+  href,
+  class: className,
+  ...props
+} = Astro.props;
+
+const baseClass = `btn btn-${variant} btn-${size}`;
+const Element = href ? 'a' : 'button';
+---
+
+<Element
+  class={`${baseClass} ${className || ''}`}
+  href={href}
+  disabled={disabled && !href}
+  {...props}
+>
+  {icon && <span class="btn-icon">{icon}</span>}
+  <span>{label}</span>
+</Element>
+
+<style>
+  .btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  a.btn {
+    text-decoration: none;
+    display: inline-flex;
+  }
+</style>
