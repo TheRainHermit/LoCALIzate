@@ -1,0 +1,26 @@
+---
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+
+// Props: lugares = [{ nombre, lat, lng }]
+const { lugares = [] } = Astro.props;
+const center = lugares.length
+  ? [lugares[0].lat, lugares[0].lng]
+  : [3.4516, -76.5319]; // Centro de Cali por defecto
+---
+
+<div class="w-full h-[400px] rounded-xl overflow-hidden shadow">
+  <MapContainer center={center} zoom={13} style={{ height: "100%", width: "100%" }}>
+    <TileLayer
+      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    />
+    {lugares.map(lugar => (
+      <Marker position={[lugar.lat, lugar.lng]} key={lugar.nombre}>
+        <Popup>
+          <strong>{lugar.nombre}</strong>
+        </Popup>
+      </Marker>
+    ))}
+  </MapContainer>
+</div>

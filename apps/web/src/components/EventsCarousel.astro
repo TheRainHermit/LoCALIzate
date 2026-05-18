@@ -1,0 +1,37 @@
+---
+/**
+ * Props:
+ * - eventos: Array<{ nombre: string, fecha_inicio: string, imagen_principal?: string, descripcion_corta?: string }>
+ */
+const { eventos = [] } = Astro.props;
+---
+
+<div class="w-full py-4">
+  <h2 class="text-2xl font-bold mb-2 text-primary">Próximos eventos</h2>
+  {eventos.length === 0 ? (
+    <div class="text-on-surface-variant">No hay eventos próximos.</div>
+  ) : (
+    <div class="flex gap-4 overflow-x-auto pb-2">
+      {eventos.map((evento, idx) => (
+        <div
+          class="min-w-[260px] max-w-xs bg-surface-container-high rounded-xl shadow p-4 flex-shrink-0"
+          key={idx}
+        >
+          {evento.imagen_principal && (
+            <img
+              src={evento.imagen_principal}
+              alt={evento.nombre}
+              class="w-full h-32 object-cover rounded-lg mb-2"
+              loading="lazy"
+            />
+          )}
+          <div class="font-semibold text-lg text-on-surface mb-1">{evento.nombre}</div>
+          <div class="text-sm text-on-surface-variant mb-2">
+            {new Date(evento.fecha_inicio).toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' })}
+          </div>
+          <div class="text-sm text-on-surface-variant line-clamp-3">{evento.descripcion_corta}</div>
+        </div>
+      ))}
+    </div>
+  )}
+</div>

@@ -1,0 +1,53 @@
+---
+import { useState } from 'react';
+
+let mediaRecorder;
+let audioChunks = [];
+
+const [recording, setRecording] = useState(false);
+const [audioUrl, setAudioUrl] = useState('');
+const [error, setError] = useState('');
+
+function startRecording() {
+  setError('');
+  audioChunks = [];
+  navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(stream => {
+      mediaRecorder = new window.MediaRecorder(stream);
+      mediaRecorder.start();
+      setRecording(true);
+
+      mediaRecorder.ondataavailable = e => {
+        audioChunks.push(e.data);
+      };
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+        setAudioUrl(URL.createObjectURL(audioBlob));
+        setRecording(false);
+      };
+    })
+    .catch(() => setError('No se pudo acceder al micrófono'));
+}
+
+function stopRecording() {
+  if (mediaRecorder && recording) {
+    mediaRecorder.stop();
+  }
+}
+---
+
+<div class="flex flex-col gap-4 items-center">
+  <button
+    class="px-6 py-2 rounded-lg bg-primary text-white font-semibold shadow hover:bg-primary-container transition"
+    onClick={recording ? stopRecording : startRecording}
+    type="button"
+  >
+    {recording ? 'Detener grabación' : 'Grabar audio'}
+  </button>
+
+  {error && <div class="text-error">{error}</div>}
+
+  {audioUrl && (
+    <audio controls src={audioUrl} class="mt-2 rounded shadow" />
+  )}
+</div>

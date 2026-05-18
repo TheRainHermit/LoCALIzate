@@ -1,0 +1,35 @@
+---
+const navItems = [
+  { href: "/admin/dashboard", label: "Dashboard" },
+  { href: "/admin/lugares", label: "Lugares" },
+  { href: "/admin/eventos", label: "Eventos" },
+  { href: "/admin/gastronomia", label: "Gastronomía" },
+  { href: "/admin/usuarios", label: "Usuarios" },
+  { href: "/admin/analytics", label: "Analytics" },
+  { href: "/admin/audio-narrations", label: "Narrativas" },
+];
+---
+
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Panel Admin | CaliGuía</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <slot name="head" />
+  </head>
+  <body class="bg-surface-container flex min-h-screen text-on-surface">
+    <aside class="w-56 bg-surface-container-high border-r border-outline-variant flex-shrink-0 hidden md:flex flex-col py-8 px-4">
+      <h1 class="text-xl font-bold mb-8 text-primary">CaliGuía Admin</h1>
+      <nav class="flex flex-col gap-2">
+        {navItems.map(item => (
+          <a href={item.href} class="px-3 py-2 rounded-lg hover:bg-surface-tint transition-colors font-medium">
+            {item.label}
+          </a>
+        ))}
+      </nav>
+    </aside>
+    <main class="flex-1 p-6">
+      <slot />
+    </main>
+  </body>
+</html>

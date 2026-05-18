@@ -1,0 +1,7 @@
+{
+  "name": "caliguia-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/web"
+  ]
+}

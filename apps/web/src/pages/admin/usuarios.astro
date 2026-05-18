@@ -1,0 +1,29 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import AdminTable from '../../components/AdminTable.astro';
+
+// Simulación de usuarios (en el futuro, consulta tu API)
+const usuarios = [
+  { nombre: "Ana Gómez", email: "ana@correo.com", intereses: "salsa, cultura", ciudad: "Bogotá" },
+  { nombre: "Carlos Ruiz", email: "carlos@correo.com", intereses: "naturaleza, aventura", ciudad: "Medellín" },
+  { nombre: "Lucía Torres", email: "lucia@correo.com", intereses: "gastronomía", ciudad: "Cali" },
+];
+---
+
+<AdminLayout>
+  <h1 class="text-2xl font-bold mb-6 text-primary">Usuarios</h1>
+
+  <form class="bg-surface rounded-xl shadow p-6 flex flex-col gap-4 max-w-xl mb-10">
+    <h2 class="text-lg font-semibold mb-2 text-primary">Agregar nuevo usuario</h2>
+    <input class="rounded border border-outline-variant p-2 bg-surface-container" placeholder="Nombre" />
+    <input class="rounded border border-outline-variant p-2 bg-surface-container" placeholder="Email" />
+    <input class="rounded border border-outline-variant p-2 bg-surface-container" placeholder="Intereses" />
+    <input class="rounded border border-outline-variant p-2 bg-surface-container" placeholder="Ciudad" />
+    <button type="submit" class="mt-2 px-6 py-2 rounded-lg bg-primary text-white font-semibold shadow hover:bg-primary-container transition">
+      Guardar usuario
+    </button>
+  </form>
+
+  <h2 class="text-xl font-semibold mb-4 text-primary">Lista de usuarios</h2>
+  <AdminTable columns={["nombre", "email", "intereses", "ciudad"]} data={usuarios} />
+</AdminLayout>

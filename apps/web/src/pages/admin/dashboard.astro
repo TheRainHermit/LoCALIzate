@@ -1,0 +1,47 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import AdminTable from '../../components/AdminTable.astro';
+
+// Simulación de métricas y lugares destacados (en el futuro, consulta tu API)
+const stats = {
+  lugares: 24,
+  eventos: 12,
+  usuarios: 320,
+  ratingPromedio: 4.7,
+};
+
+const lugaresDestacados = [
+  { nombre: "Iglesia La Ermita", zona: "centro", rating: 4.9, visitas: 1200 },
+  { nombre: "El Gato del Río", zona: "oeste", rating: 4.8, visitas: 950 },
+  { nombre: "Cristo Rey", zona: "oeste", rating: 4.7, visitas: 870 },
+];
+---
+
+<AdminLayout>
+  <h1 class="text-2xl font-bold mb-6 text-primary">Dashboard</h1>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
+    <div class="bg-surface rounded-xl shadow p-6 flex flex-col items-center">
+      <span class="text-3xl mb-2">📍</span>
+      <div class="text-lg font-semibold">{stats.lugares}</div>
+      <div class="text-on-surface-variant text-sm">Lugares</div>
+    </div>
+    <div class="bg-surface rounded-xl shadow p-6 flex flex-col items-center">
+      <span class="text-3xl mb-2">🎉</span>
+      <div class="text-lg font-semibold">{stats.eventos}</div>
+      <div class="text-on-surface-variant text-sm">Eventos</div>
+    </div>
+    <div class="bg-surface rounded-xl shadow p-6 flex flex-col items-center">
+      <span class="text-3xl mb-2">👥</span>
+      <div class="text-lg font-semibold">{stats.usuarios}</div>
+      <div class="text-on-surface-variant text-sm">Usuarios</div>
+    </div>
+    <div class="bg-surface rounded-xl shadow p-6 flex flex-col items-center">
+      <span class="text-3xl mb-2">⭐</span>
+      <div class="text-lg font-semibold">{stats.ratingPromedio}</div>
+      <div class="text-on-surface-variant text-sm">Rating promedio</div>
+    </div>
+  </div>
+
+  <h2 class="text-xl font-semibold mb-4 mt-8 text-primary">Lugares destacados</h2>
+  <AdminTable columns={["nombre", "zona", "rating", "visitas"]} data={lugaresDestacados} />
+</AdminLayout>

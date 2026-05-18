@@ -1,0 +1,42 @@
+---
+const features = [
+  {
+    icon: "📸",
+    title: "Reconocimiento Visual",
+    desc: "Identifica monumentos y lugares emblemáticos usando la cámara de tu celular.",
+  },
+  {
+    icon: "🔊",
+    title: "Narración en Voz Caleña",
+    desc: "Recibe historias y datos curiosos narrados con acento y chispa local.",
+  },
+  {
+    icon: "🗺️",
+    title: "Rutas Inteligentes",
+    desc: "Sugerencias de rutas y puntos de interés según tus gustos y ubicación.",
+  },
+  {
+    icon: "🍽️",
+    title: "Recomendaciones Gastronómicas",
+    desc: "Descubre dónde probar los mejores sabores caleños cerca de ti.",
+  },
+  {
+    icon: "📲",
+    title: "Alertas Contextuales",
+    desc: "Recibe notificaciones sobre eventos, seguridad y datos útiles en tiempo real.",
+  },
+];
+---
+
+<section class="py-8 bg-surface-container">
+  <h2 class="text-2xl font-bold text-primary mb-6 text-center">¿Qué hace único a CaliGuía?</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+    {features.map(f => (
+      <div class="bg-surface rounded-xl shadow p-6 flex flex-col items-center text-center">
+        <div class="text-4xl mb-3">{f.icon}</div>
+        <div class="font-semibold text-lg text-on-surface mb-1">{f.title}</div>
+        <div class="text-on-surface-variant text-sm">{f.desc}</div>
+      </div>
+    ))}
+  </div>
+</section>

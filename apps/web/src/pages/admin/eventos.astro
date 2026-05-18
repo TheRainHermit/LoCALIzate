@@ -1,0 +1,29 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import AdminTable from '../../components/AdminTable.astro';
+
+// Simulación de eventos (en el futuro, consulta tu API)
+const eventos = [
+  { nombre: "Feria de Cali", fecha_inicio: "2026-12-25", tipo_evento: "cultural", escala: "internacional" },
+  { nombre: "Festival Petronio Álvarez", fecha_inicio: "2026-08-14", tipo_evento: "musica", escala: "internacional" },
+  { nombre: "Colombia BirdFair", fecha_inicio: "2026-02-15", tipo_evento: "naturaleza", escala: "internacional" },
+];
+---
+
+<AdminLayout>
+  <h1 class="text-2xl font-bold mb-6 text-primary">Eventos</h1>
+
+  <form class="bg-surface rounded-xl shadow p-6 flex flex-col gap-4 max-w-xl mb-10">
+    <h2 class="text-lg font-semibold mb-2 text-primary">Agregar nuevo evento</h2>
+    <input class="rounded border border-outline-variant p-2 bg-surface-container" placeholder="Nombre del evento" />
+    <input type="date" class="rounded border border-outline-variant p-2 bg-surface-container" placeholder="Fecha de inicio" />
+    <input class="rounded border border-outline-variant p-2 bg-surface-container" placeholder="Tipo de evento" />
+    <input class="rounded border border-outline-variant p-2 bg-surface-container" placeholder="Escala" />
+    <button type="submit" class="mt-2 px-6 py-2 rounded-lg bg-primary text-white font-semibold shadow hover:bg-primary-container transition">
+      Guardar evento
+    </button>
+  </form>
+
+  <h2 class="text-xl font-semibold mb-4 text-primary">Lista de eventos</h2>
+  <AdminTable columns={["nombre", "fecha_inicio", "tipo_evento", "escala"]} data={eventos} />
+</AdminLayout>

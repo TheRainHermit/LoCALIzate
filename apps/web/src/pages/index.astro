@@ -1,0 +1,39 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import Hero from '../components/Hero.astro';
+import Features from '../components/Features.astro';
+import EventsCarousel from '../components/EventsCarousel.astro';
+
+// Simulación de eventos (puedes conectar a tu API después)
+const eventos = [
+  {
+    nombre: "Feria de Cali",
+    fecha_inicio: "2026-12-25",
+    imagen_principal: "https://upload.wikimedia.org/wikipedia/commons/6/6e/Feria_de_Cali.jpg",
+    descripcion_corta: "La fiesta más grande de la ciudad, llena de salsa y alegría.",
+  },
+  {
+    nombre: "Festival Petronio Álvarez",
+    fecha_inicio: "2026-08-14",
+    imagen_principal: "https://upload.wikimedia.org/wikipedia/commons/2/2e/Petronio_Alvarez.jpg",
+    descripcion_corta: "El festival de música del Pacífico más importante de Colombia.",
+  },
+  {
+    nombre: "Colombia BirdFair",
+    fecha_inicio: "2026-02-15",
+    imagen_principal: "https://upload.wikimedia.org/wikipedia/commons/3/3a/Birdfair_Cali.jpg",
+    descripcion_corta: "El evento para los amantes de la naturaleza y la observación de aves.",
+  },
+];
+---
+
+<MainLayout>
+  <Hero 
+    title="¿Cómo puede la tecnología convertirse en el mejor guía de Cali?"
+    subtitle="Un asistente que reconoce lo que ves, entiende tus intereses y te habla como un verdadero caleño"
+  />
+  <Features />
+  <section id="eventos" class="mt-12">
+    <EventsCarousel eventos={eventos} />
+  </section>
+</MainLayout>

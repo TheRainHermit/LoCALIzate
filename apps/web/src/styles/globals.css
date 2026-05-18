@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-surface text-on-background font-sans;
+  font-family: 'Plus Jakarta Sans', 'Be Vietnam Pro', system-ui, sans-serif;
+  min-height: 100vh;
+  scroll-behavior: smooth;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  @apply text-4xl md:text-5xl text-primary mb-4;
+}
+h2 {
+  @apply text-2xl md:text-3xl text-primary mb-3;
+}
+h3 {
+  @apply text-xl text-on-surface mb-2;
+}
+
+section {
+  @apply mb-12;
+}
+
+a {
+  @apply text-primary underline underline-offset-2 transition-colors;
+}
+a:hover {
+  @apply text-secondary;
+}
+
+.card, .astro-card {
+  @apply bg-surface-container-high rounded-xl shadow p-6 mb-6;
+}
+
+ul, ol {
+  @apply list-disc pl-6 mb-4;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: #faecdb;
+}
+::-webkit-scrollbar-thumb {
+  background: #e5d8c8;
+  border-radius: 8px;
+}
+
+::selection {
+  background: #ffdeac;
+  color: #211b11;
+}

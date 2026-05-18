@@ -1,0 +1,42 @@
+---
+import "../styles/tailwind.css";
+import "../styles/globals.css";
+
+const navItems = [
+  { href: "/", label: "Inicio" },
+  { href: "#features", label: "Características" },
+  { href: "#eventos", label: "Eventos" },
+  { href: "/admin/dashboard", label: "Admin" },
+];
+
+const year = new Date().getFullYear();
+---
+
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>CaliGuía</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <slot name="head" />
+  </head>
+  <body class="bg-surface text-on-background font-sans min-h-screen flex flex-col">
+    <header class="w-full bg-surface-container-highest shadow-sm">
+      <nav class="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
+        <a href="/" class="text-xl font-extrabold text-primary">CaliGuía</a>
+        <ul class="flex gap-6">
+          {navItems.map(item => (
+            <li>
+              <a href={item.href} class="text-on-surface-variant hover:text-primary transition-colors font-medium">{item.label}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </header>
+    <main class="flex-1 w-full max-w-6xl mx-auto px-4 py-8">
+      <slot />
+    </main>
+    <footer class="w-full bg-surface-container-highest text-on-surface-variant text-center py-6 mt-8 border-t border-outline-variant">
+      CaliGuía © {year} — Hecho con ❤️ en Cali
+    </footer>
+  </body>
+</html>

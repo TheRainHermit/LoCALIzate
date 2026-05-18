@@ -1,0 +1,29 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import AdminTable from '../../components/AdminTable.astro';
+
+// Simulación de platos (en el futuro, consulta tu API)
+const platos = [
+  { nombre: "Pandebono", tipo_plato: "desayuno", precio_promedio: "$2.000", origen: "Dagua, Valle" },
+  { nombre: "Chuleta Valluna", tipo_plato: "comida_tipica", precio_promedio: "$25.000", origen: "Valle del Cauca" },
+  { nombre: "Lulada", tipo_plato: "bebida", precio_promedio: "$6.000", origen: "Valle del Cauca" },
+];
+---
+
+<AdminLayout>
+  <h1 class="text-2xl font-bold mb-6 text-primary">Gastronomía</h1>
+
+  <form class="bg-surface rounded-xl shadow p-6 flex flex-col gap-4 max-w-xl mb-10">
+    <h2 class="text-lg font-semibold mb-2 text-primary">Agregar nuevo plato</h2>
+    <input class="rounded border border-outline-variant p-2 bg-surface-container" placeholder="Nombre del plato" />
+    <input class="rounded border border-outline-variant p-2 bg-surface-container" placeholder="Tipo de plato" />
+    <input class="rounded border border-outline-variant p-2 bg-surface-container" placeholder="Precio promedio" />
+    <input class="rounded border border-outline-variant p-2 bg-surface-container" placeholder="Origen" />
+    <button type="submit" class="mt-2 px-6 py-2 rounded-lg bg-primary text-white font-semibold shadow hover:bg-primary-container transition">
+      Guardar plato
+    </button>
+  </form>
+
+  <h2 class="text-xl font-semibold mb-4 text-primary">Lista de platos típicos</h2>
+  <AdminTable columns={["nombre", "tipo_plato", "precio_promedio", "origen"]} data={platos} />
+</AdminLayout>

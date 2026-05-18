@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cali Mágica - San Antonio Church</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-primary": "#ffba38",
+                    "surface": "#fff8f3",
+                    "secondary-fixed": "#ffdad7",
+                    "surface-container-lowest": "#ffffff",
+                    "background": "#fff8f3",
+                    "secondary-fixed-dim": "#ffb3af",
+                    "outline-variant": "#d6c4ac",
+                    "tertiary": "#2c694e",
+                    "on-surface-variant": "#514532",
+                    "surface-tint": "#7e5700",
+                    "surface-container": "#faecdb",
+                    "on-primary-fixed-variant": "#604100",
+                    "surface-dim": "#e5d8c8",
+                    "surface-bright": "#fff8f3",
+                    "on-error": "#ffffff",
+                    "on-background": "#211b11",
+                    "error": "#ba1a1a",
+                    "outline": "#847560",
+                    "on-secondary-fixed-variant": "#930017",
+                    "on-error-container": "#93000a",
+                    "surface-container-high": "#f4e6d6",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-low": "#fff2e2",
+                    "on-primary-container": "#6b4900",
+                    "primary-fixed-dim": "#ffba38",
+                    "on-primary-fixed": "#281900",
+                    "surface-container-highest": "#eee0d0",
+                    "error-container": "#ffdad6",
+                    "surface-variant": "#eee0d0",
+                    "on-tertiary-container": "#1a5a40",
+                    "on-secondary-fixed": "#410005",
+                    "inverse-on-surface": "#fdefde",
+                    "tertiary-fixed": "#b1f0ce",
+                    "on-primary": "#ffffff",
+                    "on-surface": "#211b11",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#0e5138",
+                    "tertiary-container": "#90cfae",
+                    "primary-fixed": "#ffdeac",
+                    "tertiary-fixed-dim": "#95d4b3",
+                    "primary-container": "#ffb300",
+                    "on-tertiary-fixed": "#002114",
+                    "on-secondary-container": "#fffbff",
+                    "primary": "#7e5700",
+                    "secondary": "#bb0020"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "margin": "20px",
+                    "gutter": "16px",
+                    "lg": "32px",
+                    "base": "8px",
+                    "md": "20px",
+                    "sm": "12px",
+                    "xl": "48px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "label-lg": ["Be Vietnam Pro"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "body-lg": ["Be Vietnam Pro"],
+                    "label-sm": ["Be Vietnam Pro"],
+                    "headline-xl": ["Plus Jakarta Sans"],
+                    "body-md": ["Be Vietnam Pro"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "30px", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .macetas-pattern {
+            background-image: radial-gradient(circle at 2px 2px, #d6c4ac 1px, transparent 0);
+            background-size: 24px 24px;
+            opacity: 0.1;
+        }
+        .audio-wave span {
+            display: inline-block;
+            width: 3px;
+            height: 12px;
+            background-color: #7e5700;
+            border-radius: 1px;
+            margin: 0 1px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 z-50 w-full bg-white dark:bg-neutral-900 border-b border-neutral-100 dark:border-neutral-800 shadow-[0_4px_20px_-5px_rgba(220,38,38,0.1)] flex justify-between items-center px-5 py-4">
+<div class="flex items-center gap-3">
+<button class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center transition-transform active:scale-95 duration-150">
+<span class="material-symbols-outlined text-on-surface">arrow_back</span>
+</button>
+<h1 class="font-plus-jakarta text-2xl font-bold tracking-tight text-red-600 dark:text-red-500">Cali Mágica</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-neutral-500 hover:bg-red-50 p-2 rounded-full transition-colors">favorite</button>
+<div class="w-10 h-10 rounded-full border-2 border-red-600 overflow-hidden">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="close-up portrait of a friendly smiling man in his 30s with a warm expression and soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBvk6zT9lSTYNWzlLn-MpqFqZQDjIUY54oJzND-kksijB_yuZXfGCjT4Ua4e48qiaWVU6N3c276-VzMFoFLFyrf3gqoRZyBcCkyCJ6DsoQT6nx2ZxanZI-rbteo49JopcDnRyu5OobW2Cf-ZkPOK3h8Z9a-M7P3ETnNdLQd_qCUib-CvGN5VIwFYmY9sTGTO_sGGvq-PUEG6Px3r0xJL29rC-Pvnikjz0UBkdJW_YsL9LwKaKezaZkzm9kpnGQ_V0MKMe-dYurTy0"/>
+</div>
+</div>
+</header>
+<main class="pt-[72px]">
+<!-- Hero Section -->
+<section class="relative w-full h-[397px] overflow-hidden">
+<img alt="San Antonio Church" class="w-full h-full object-cover" data-alt="historic white chapel of San Antonio in Cali Colombia sitting on a hill at sunset with warm orange sky and lush green grass" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBk4T5HVT6DvaC4IQlV5dbL4V-03iFTItQMrbh9IcLlUM7AYNrsq04eDF5M2sneP5ENhuUiIMfcg03CNE1iymYMKJ418mfjpQKUKfeC3Lf1WTt5LeQzOt5tgsn1exXRLolvliqEUnaLgP6QNbV6oS2IMQTvBCY7CbsfjciJTN9fMZ42RsuNtJvxDHywIbmb1iYZRgSw2Xnixbg9bpJXxRv1RXnPL5qT66rkZCBSaspdMdZZoQaGoCCO8hTxJmA2lCXC-QrMVEcnVIc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<div class="flex items-center gap-2 mb-2">
+<span class="bg-tertiary text-white px-3 py-1 rounded-full text-label-sm font-label-sm">HISTORIC SITE</span>
+<div class="flex items-center gap-1 bg-white/20 backdrop-blur-md text-white px-3 py-1 rounded-full text-label-sm font-label-sm">
+<span class="material-symbols-outlined text-[14px]">star</span>
+<span>4.8 (1.2k reviews)</span>
+</div>
+</div>
+<h2 class="font-headline-xl text-white">San Antonio Church</h2>
+<p class="text-white/90 font-body-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+                    Barrio San Antonio, Cali
+                </p>
+</div>
+</section>
+<!-- Bento Content Grid -->
+<div class="px-margin py-lg grid grid-cols-1 md:grid-cols-12 gap-gutter max-w-6xl mx-auto">
+<!-- Description & AR - Main Column -->
+<div class="md:col-span-8 flex flex-col gap-gutter">
+<!-- Description Card -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/30 shadow-sm relative overflow-hidden">
+<div class="macetas-pattern absolute inset-0 pointer-events-none"></div>
+<h3 class="font-headline-md text-primary mb-sm">A Colonial Gem</h3>
+<p class="font-body-md text-on-surface-variant leading-relaxed">
+                        Perched atop the hill of San Antonio, this 18th-century chapel is the heart of Cali's oldest neighborhood. Its whitewashed walls and mud-tiled roof stand as a testament to the city's colonial past, offering the most iconic panoramic views of the "Sucursal del Cielo."
+                    </p>
+<div class="mt-md flex gap-sm">
+<button class="flex-1 bg-secondary text-white font-label-lg py-3 rounded-lg flex items-center justify-center gap-2 shadow-lg shadow-secondary/20 transition-transform active:scale-95">
+<span class="material-symbols-outlined">view_in_ar</span>
+                            Activate AR Experience
+                        </button>
+<button class="px-4 border-2 border-primary text-primary rounded-lg transition-transform active:scale-95">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</div>
+<!-- Audio Guide Player -->
+<div class="bg-surface-container p-6 rounded-xl border border-primary/20">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center text-white shadow-md">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">mic</span>
+</div>
+<div>
+<h4 class="font-headline-md text-sm mb-0">Audio Guide</h4>
+<span class="text-label-sm text-on-surface-variant">Escuchá la historia con voz de un local</span>
+</div>
+</div>
+<div class="audio-wave flex items-end h-6">
+<span class="h-2"></span><span class="h-4"></span><span class="h-6"></span><span class="h-3"></span><span class="h-5"></span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-label-sm text-primary">1:45</span>
+<div class="flex-1 h-1.5 bg-outline-variant rounded-full overflow-hidden">
+<div class="w-1/3 h-full bg-primary rounded-full"></div>
+</div>
+<span class="text-label-sm text-on-surface-variant">4:20</span>
+</div>
+<div class="flex justify-center items-center gap-8 mt-4">
+<button class="material-symbols-outlined text-primary text-3xl">replay_10</button>
+<button class="w-14 h-14 bg-white rounded-full flex items-center justify-center text-primary shadow-md active:scale-90 transition-transform border border-primary/10">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+<button class="material-symbols-outlined text-primary text-3xl">forward_10</button>
+</div>
+</div>
+<!-- Reviews Section -->
+<div class="bg-white rounded-xl p-6 border border-outline-variant/20 shadow-sm">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-md text-on-surface">Community Reviews</h3>
+<button class="text-primary font-label-lg">Write Review</button>
+</div>
+<div class="space-y-6">
+<div class="flex gap-4">
+<img alt="Reviewer" class="w-10 h-10 rounded-full object-cover" data-alt="portrait of a woman with vibrant smile and colorful clothing with blurred urban background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpcrdVG9hlIYJerYnZ3w4xftaam8X7jaZXiy2pcruZXQTW_h8BWJodGD9m_cpGHRL_BZ7t3P8WNtqdPyjx3yl79o1TgjTGGPK0121HwagnF5VdSKLrWRjONroO3BBanZhK9F4AEdIFeALrXxsey5uTXW2pcUc1if02LedfHhTe7WD0_m_MrDicajjNqDmFOdWoB6EfwYs9UoceVRyQYdxuJ5IfANgx5rR-LjkI1Lem3yMwdFK2sZ9epT35MkiU6PlJHnt6eSA5rso"/>
+<div>
+<div class="flex justify-between w-full">
+<h5 class="font-label-lg">Camila V.</h5>
+<span class="text-label-sm text-neutral-400">2d ago</span>
+</div>
+<div class="flex text-primary-container mb-1">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="text-body-md text-on-surface-variant">The best spot for a sunset with a "Lulada". Don't miss the storytelling events that happen right in front of the chapel!</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sidebar Column -->
+<div class="md:col-span-4 flex flex-col gap-gutter">
+<!-- Map Integration -->
+<div class="bg-surface-container-high rounded-xl overflow-hidden border border-outline-variant shadow-sm h-64 md:h-80 relative group">
+<img alt="Map" class="w-full h-full object-cover grayscale-[20%] group-hover:scale-110 transition-transform duration-700" data-alt="abstract top down view of a stylized map with colorful location markers and clean urban layout" data-location="Cali, Colombia" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD918drpsGUY_CImd3aBAiKLjNhaEQJCkKmXJ-A4nEevv9QfzlSjWdClyeJMhUjq1g5ib2K75WvndZJlqudA6Hz9z858_NEoAnxkoenr8mpqyRhegceTVIxoKPp4liBpXDFp0S3YspUt2B8Yz3bASqqbC0KFJZExqNhUn7T1Jw_wvRTJNhdFIByvflniqkI4aVmch6WMkw9VxxVK1nESZEYFMshXmZbPtbSS8n8k1afI9fIFWj6Cfdvi3mghKcNP9YVtpuOSjq_mew"/>
+<div class="absolute inset-0 bg-black/10"></div>
+<div class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md p-4 rounded-lg flex items-center justify-between border border-white/50">
+<div>
+<p class="text-label-sm font-bold text-on-surface">Get Directions</p>
+<p class="text-[10px] text-neutral-500">12 min from your location</p>
+</div>
+<button class="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform">
+<span class="material-symbols-outlined">directions_walk</span>
+</button>
+</div>
+</div>
+<!-- Cali Trivia Bento -->
+<div class="bg-tertiary-container/30 p-6 rounded-xl border-2 border-dashed border-tertiary/40">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-tertiary">lightbulb</span>
+<h3 class="font-headline-md text-sm text-tertiary">Cali Trivia</h3>
+</div>
+<div class="space-y-4">
+<div class="bg-white/60 p-3 rounded-lg">
+<p class="font-label-sm text-on-tertiary-container italic">"Did you know?"</p>
+<p class="text-body-md text-on-surface">The hill was once a common grazing spot for goats before the chapel was built in 1747.</p>
+</div>
+<div class="bg-white/60 p-3 rounded-lg">
+<p class="font-label-sm text-on-tertiary-container italic">"Salsa Connection"</p>
+<p class="text-body-md text-on-surface">Many famous salsa lyrics mention this hill as the place where 'the breeze touches the soul'.</p>
+</div>
+</div>
+</div>
+<!-- Nearby Shelf -->
+<div class="bg-surface-container-low p-5 rounded-xl border border-outline-variant/30">
+<h4 class="font-label-lg mb-4 flex items-center justify-between">Nearby Gems - Joyas Ocultas <span class="material-symbols-outlined text-sm">trending_flat</span></h4>
+<div class="space-y-3"><div class="flex items-center gap-3 p-2 hover:bg-white rounded-lg transition-colors cursor-pointer">
+<div class="w-12 h-12 rounded-md bg-secondary-container flex items-center justify-center text-white">
+<span class="material-symbols-outlined">castle</span>
+</div>
+<div>
+<p class="text-label-sm font-bold">Hacienda Cañasgordas</p>
+<p class="text-[10px] text-neutral-500">Historic Landmark • Architectural Gem</p>
+</div>
+</div>
+<div class="flex items-center gap-3 p-2 hover:bg-white rounded-lg transition-colors cursor-pointer">
+<div class="w-12 h-12 rounded-md bg-tertiary flex items-center justify-center text-white">
+<span class="material-symbols-outlined">location_city</span>
+</div>
+<div>
+<p class="text-label-sm font-bold">Bulevar de la Sexta</p>
+<p class="text-[10px] text-neutral-500">Urban Walk • Local Shops</p>
+</div>
+</div></div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md border-t border-neutral-100 dark:border-neutral-800 shadow-[0_-4px_15px_-3px_rgba(0,0,0,0.05)]">
+<a class="flex flex-col items-center justify-center text-neutral-500 dark:text-neutral-400 px-4 py-1.5 hover:text-red-500 transition-all duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-plus-jakarta text-[11px] font-semibold">Explorer</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 rounded-xl px-4 py-1.5 active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="map" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-plus-jakarta text-[11px] font-semibold">Routes</span>
+</a>
+<a class="flex flex-col items-center justify-center text-neutral-500 dark:text-neutral-400 px-4 py-1.5 hover:text-red-500 transition-all duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="mic_none">mic_none</span>
+<span class="font-plus-jakarta text-[11px] font-semibold">Audio</span>
+</a>
+<a class="flex flex-col items-center justify-center text-neutral-500 dark:text-neutral-400 px-4 py-1.5 hover:text-red-500 transition-all duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-plus-jakarta text-[11px] font-semibold">Profile</span>
+</a>
+</nav>
+</body></html>
