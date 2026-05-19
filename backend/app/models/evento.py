@@ -1,23 +1,26 @@
 """
-Evento Schemas for LoCALIzate Backend
-====================================
+Evento Model for LoCALIzate Backend
+==================================
 
-Pydantic models for events and festivals request/response validation.
+Model representing events, festivals, and activities in Cali, Colombia.
+Includes major events like:
+- Feria de Cali (December 25-30)
+- Festival Mundial de Salsa (September)
+- Festival Petronio Álvarez (August)
+- Salsa al Parque (December)
+- Tour Gastronómico del Pacífico (weekly)
 
-Schemas:
-    - EventoBase: Base fields for evento
-    - EventoCreate: Creation request
-    - EventoUpdate: Update request
-    - EventoResponse: Basic response
-    - EventoDetailResponse: Detailed response with all fields
-    - EventoListResponse: Paginated list response
-    - EventoProximosResponse: Upcoming events grouped by time
-    - EventoFilters: Query filters
-    - EventoFrecuencia: Frequency types enum
+Fields:
+    - Basic: id, nombre, slug, descripcion
+    - Dates: fecha_inicio, fecha_fin, hora_inicio, hora_fin
+    - Location: ubicacion, direccion, latitud, longitud
+    - Categorization: tags, categoria_id
+    - Details: precio, capacidad, destacado
+    - Media: imagen, imagenes
 """
 
 from typing import Optional, List, Dict, Any
-from datetime import datetime, date
+from datetime import datetime, date, time
 from enum import Enum
 from pydantic import BaseModel, Field, field_validator, ConfigDict
 
@@ -49,12 +52,37 @@ class EventoFrecuencia(str, Enum):
         return names.get(value, value)
 
 
+class DiaSemana(int, Enum):
+    """Days of the week for recurring events (Monday=1 to Sunday=7)."""
+    LUNES = 1
+    MARTES = 2
+    MIERCOLES = 3
+    JUEVES = 4
+    VIERNES = 5
+    SABADO = 6
+    DOMINGO = 7
+    
+    @classmethod
+    def get_display_name(cls, value: int) -> str:
+        """Get display name in Spanish."""
+        names = {
+            1: "Lunes",
+            2: "Martes",
+            3: "Miércoles",
+            4: "Jueves",
+            5: "Viernes",
+            6: "Sábado",
+            7: "Domingo"
+        }
+        return names.get(value, "Desconocido")
+
+
 # =====================================================
-# BASE SCHEMAS
+# BASE MODELS
 # =====================================================
 
 class EventoBase(BaseModel):
-    """Base schema with common fields for evento."""
+    """Base model for Evento with common fields."""
     
     nombre: str = Field(..., min_length=1, max_length=200, description="Nombre del evento")
     descripcion: str = Field(..., min_length=10, description="Descripción detallada del evento")
@@ -110,7 +138,6 @@ class EventoBase(BaseModel):
             "example": {
                 "nombre": "Feria de Cali 2026",
                 "descripcion": "La feria más salsera del mundo. Salsódromo, cabalgata y conciertos masivos.",
-                "descripcion_corta": "La feria más importante de Colombia",
                 "fecha_inicio": "2026-12-25",
                 "fecha_fin": "2026-12-30",
                 "ubicacion": "Toda la ciudad",
@@ -128,10 +155,12 @@ class EventoBase(BaseModel):
         if v is None:
             return v
         
+        # Check if fecha_fin is after fecha_inicio
         if info.field_name == "fecha_fin" and v is not None:
             fecha_inicio = info.data.get("fecha_inicio")
             if fecha_inicio and v < fecha_inicio:
                 raise ValueError("La fecha de fin no puede ser anterior a la fecha de inicio")
+        
         return v
     
     @field_validator("hora_inicio", "hora_fin")
@@ -156,7 +185,22 @@ class EventoBase(BaseModel):
         for dia in v:
             if dia < 1 or dia > 7:
                 raise ValueError("Los días de semana deben estar entre 1 (Lunes) y 7 (Domingo)")
-        return sorted(set(v))
+        return sorted(set(v))  # Remove duplicates and sort
+    
+    @field_validator("precio_min", "precio_max")
+    @classmethod
+    def validate_precios(cls, v: Optional[int], info) -> Optional[int]:
+        """Validate prices."""
+        if v is not None and v < 0:
+            raise ValueError("El precio no puede ser negativo")
+        
+        # Check that min <= max
+        if info.field_name == "precio_max" and v is not None:
+            precio_min = info.data.get("precio_min")
+            if precio_min is not None and v < precio_min:
+                raise ValueError("El precio máximo no puede ser menor que el precio mínimo")
+        
+        return v
     
     @property
     def es_gratis(self) -> bool:
@@ -164,12 +208,63 @@ class EventoBase(BaseModel):
         if self.precio:
             return "gratis" in self.precio.lower() or "free" in self.precio.lower()
         return self.precio_min == 0 or (self.precio_min == 0 and self.precio_max == 0)
+    
+    @property
+    def esta_activo(self) -> bool:
+        """Check if event is currently active (today between dates)."""
+        if not self.activo:
+            return False
+        
+        today = date.today()
+        if self.fecha_inicio <= today <= (self.fecha_fin or self.fecha_inicio):
+            return True
+        return False
+    
+    def get_precio_range(self) -> str:
+        """Get formatted price range string."""
+        if self.es_gratis:
+            return "Gratis"
+        
+        if self.precio_min and self.precio_max:
+            if self.precio_min == self.precio_max:
+                return f"${self.precio_min:,} COP".replace(",", ".")
+            return f"${self.precio_min:,} - ${self.precio_max:,} COP".replace(",", ".")
+        elif self.precio_min:
+            return f"Desde ${self.precio_min:,} COP".replace(",", ".")
+        elif self.precio_max:
+            return f"Hasta ${self.precio_max:,} COP".replace(",", ".")
+        return self.precio or "Consultar"
+    
+    def get_fecha_str(self) -> str:
+        """Get formatted date string."""
+        if self.fecha_fin and self.fecha_fin != self.fecha_inicio:
+            return f"{self.fecha_inicio.strftime('%d/%m/%Y')} - {self.fecha_fin.strftime('%d/%m/%Y')}"
+        return self.fecha_inicio.strftime('%d/%m/%Y')
+    
+    def get_horario_str(self) -> str:
+        """Get formatted schedule string."""
+        if self.hora_inicio and self.hora_fin:
+            return f"{self.hora_inicio} - {self.hora_fin}"
+        elif self.hora_inicio:
+            return f"Desde {self.hora_inicio}"
+        elif self.hora_fin:
+            return f"Hasta {self.hora_fin}"
+        return "Horario por confirmar"
+    
+    def get_dias_semana_str(self) -> str:
+        """Get formatted days of week string."""
+        if not self.dias_semana:
+            return ""
+        
+        dias = [DiaSemana.get_display_name(d) for d in self.dias_semana]
+        if len(dias) == 1:
+            return dias[0]
+        return ", ".join(dias)
 
 
 class EventoCreate(EventoBase):
-    """Schema for creating a new evento."""
+    """Model for creating a new Evento."""
     
-    slug: Optional[str] = None
     created_at: Optional[datetime] = Field(default_factory=datetime.now)
     
     @field_validator("slug", mode="before")
@@ -180,6 +275,7 @@ class EventoCreate(EventoBase):
             return v
         
         nombre = info.data.get("nombre", "")
+        # Generate slug: lowercase, replace spaces with hyphens, remove special chars
         slug = nombre.lower()
         slug = slug.replace(" ", "-")
         slug = slug.replace("á", "a").replace("é", "e").replace("í", "i")
@@ -189,7 +285,7 @@ class EventoCreate(EventoBase):
 
 
 class EventoUpdate(BaseModel):
-    """Schema for updating an existing evento."""
+    """Model for updating an existing Evento."""
     
     nombre: Optional[str] = Field(None, min_length=1, max_length=200)
     slug: Optional[str] = None
@@ -227,101 +323,30 @@ class EventoUpdate(BaseModel):
 
 
 # =====================================================
-# RESPONSE SCHEMAS
+# DATABASE MODEL (for response/DB operations)
 # =====================================================
 
-class EventoResponse(BaseModel):
-    """Basic response schema for evento."""
+class EventoInDB(EventoBase):
+    """Model representing an Evento as stored in the database."""
     
-    id: int
-    nombre: str
-    descripcion_corta: Optional[str]
-    fecha_inicio: str
-    fecha_fin: Optional[str]
-    hora_inicio: Optional[str]
-    hora_fin: Optional[str]
-    ubicacion: Optional[str]
-    direccion: Optional[str]
-    lugar_id: Optional[int]
-    lugar_nombre: Optional[str] = None
-    precio: Optional[str]
-    precio_min: Optional[int]
-    precio_max: Optional[int]
-    icono: str
-    imagen: Optional[str]
-    tags: Optional[List[str]]
-    destacado: bool
-    es_recurrente: bool
-    frecuencia: Optional[str]
-    
-    model_config = ConfigDict(from_attributes=True)
-    
-    @property
-    def es_gratis(self) -> bool:
-        """Check if event is free."""
-        if self.precio:
-            return "gratis" in self.precio.lower()
-        return self.precio_min == 0
-
-
-class EventoDetailResponse(EventoResponse):
-    """Detailed response schema for evento with all fields."""
-    
-    descripcion: str
-    slug: str
-    latitud: Optional[float]
-    longitud: Optional[float]
-    capacidad: Optional[int]
-    categoria_id: Optional[int]
-    categoria_nombre: Optional[str] = None
-    imagenes: Optional[List[str]]
-    video_url: Optional[str]
-    organizador: Optional[str]
-    contacto_email: Optional[str]
-    contacto_telefono: Optional[str]
-    sitio_web: Optional[str]
-    instagram: Optional[str]
-    activo: bool
-    created_at: str
-    updated_at: Optional[str]
-    
-    # Computed fields
-    esta_activo: bool = False
-    fecha_formateada: str = ""
-    horario_formateado: str = ""
+    id: int = Field(..., description="ID único del evento")
+    slug: str = Field(..., description="Slug URL-friendly")
+    created_at: datetime = Field(..., description="Fecha de creación")
+    updated_at: Optional[datetime] = Field(None, description="Fecha de última actualización")
     
     model_config = ConfigDict(from_attributes=True)
 
 
-class EventoWithLugar(EventoResponse):
-    """Extended response with place information."""
+class EventoWithLugar(EventoInDB):
+    """Extended model with place information."""
     
     lugar_nombre: Optional[str] = Field(None, description="Nombre del lugar asociado")
     lugar_direccion: Optional[str] = Field(None, description="Dirección del lugar asociado")
     categoria_nombre: Optional[str] = Field(None, description="Nombre de la categoría")
 
 
-class EventoProximosResponse(BaseModel):
-    """Response for upcoming events grouped by time."""
-    
-    hoy: List[EventoResponse] = Field(default_factory=list, description="Eventos que ocurren hoy")
-    manana: List[EventoResponse] = Field(default_factory=list, description="Eventos que ocurren mañana")
-    esta_semana: List[EventoResponse] = Field(default_factory=list, description="Eventos esta semana")
-    este_mes: List[EventoResponse] = Field(default_factory=list, description="Eventos este mes")
-    proximos_meses: List[EventoResponse] = Field(default_factory=list, description="Eventos próximos meses")
-
-
-class EventoListResponse(BaseModel):
-    """Paginated list response for eventos."""
-    
-    total: int = Field(..., description="Número total de resultados")
-    limit: int = Field(..., description="Límite aplicado")
-    offset: int = Field(..., description="Desplazamiento aplicado")
-    results: List[EventoResponse] = Field(..., description="Lista de eventos")
-
-
 # =====================================================
-# FILTERS SCHEMA
+# FILTERS MODEL
 # =====================================================
 
 class EventoFilters(BaseModel):
@@ -352,13 +377,102 @@ class EventoFilters(BaseModel):
     def to_dict(self) -> Dict[str, Any]:
         """Convert filters to dictionary for Supabase query."""
         result = {}
+        
         if self.categoria:
             result["categoria_slug"] = self.categoria
+        
         if self.destacados is not None:
             result["destacado"] = self.destacados
+        
         if self.activos is not None:
             result["activo"] = self.activos
+        
         return result
+
+
+# =====================================================
+# RESPONSE MODELS
+# =====================================================
+
+class EventoListResponse(BaseModel):
+    """Response model for list of eventos."""
+    
+    total: int = Field(..., description="Número total de resultados")
+    limit: int = Field(..., description="Límite aplicado")
+    offset: int = Field(..., description="Desplazamiento aplicado")
+    results: List[EventoWithLugar] = Field(..., description="Lista de eventos")
+
+
+class EventoProximosResponse(BaseModel):
+    """Response model for upcoming events."""
+    
+    hoy: List[EventoWithLugar] = Field(default_factory=list, description="Eventos que ocurren hoy")
+    manana: List[EventoWithLugar] = Field(default_factory=list, description="Eventos que ocurren mañana")
+    esta_semana: List[EventoWithLugar] = Field(default_factory=list, description="Eventos esta semana")
+    proximos_meses: List[EventoWithLugar] = Field(default_factory=list, description="Eventos próximos meses")
+
+
+# =====================================================
+# HELPER FUNCTIONS
+# =====================================================
+
+def get_eventos_destacados_predefinidos() -> List[Dict[str, Any]]:
+    """Get predefined highlighted events for Cali."""
+    return [
+        {
+            "nombre": "Feria de Cali 2026",
+            "fecha_inicio": date(2026, 12, 25),
+            "fecha_fin": date(2026, 12, 30),
+            "descripcion": "La feria más importante de Colombia. Salsódromo, cabalgata, conciertos y cultura caleña.",
+            "ubicacion": "Toda la ciudad",
+            "destacado": True,
+            "icono": "🎉",
+            "tags": ["Cultura", "Fiesta", "Salsa"]
+        },
+        {
+            "nombre": "Festival Mundial de Salsa 2026",
+            "fecha_inicio": date(2026, 9, 24),
+            "fecha_fin": date(2026, 9, 28),
+            "descripcion": "El evento de salsa más grande del mundo. Competencias, conciertos y clases magistrales.",
+            "ubicacion": "Coliseo El Pueblo",
+            "destacado": True,
+            "icono": "🎺",
+            "tags": ["Salsa", "Música", "Competencia"]
+        },
+        {
+            "nombre": "Festival Petronio Álvarez",
+            "fecha_inicio": date(2026, 8, 14),
+            "fecha_fin": date(2026, 8, 19),
+            "descripcion": "Celebración de la música del Pacífico. Currulao, marimba y gastronomía afrocolombiana.",
+            "ubicacion": "Unidad Deportiva",
+            "destacado": True,
+            "icono": "🪘",
+            "tags": ["Cultura", "Pacífico", "Música"]
+        },
+        {
+            "nombre": "Salsa al Parque",
+            "fecha_inicio": date(2026, 12, 10),
+            "fecha_fin": date(2026, 12, 15),
+            "descripcion": "Festival gratuito de salsa en espacios públicos. Orquestas en vivo y baile callejero.",
+            "ubicacion": "Parque del Perro",
+            "destacado": True,
+            "icono": "🎷",
+            "tags": ["Salsa", "Gratis", "Calle"]
+        },
+        {
+            "nombre": "Tour Gastronómico del Pacífico",
+            "fecha_inicio": date(2026, 1, 1),
+            "fecha_fin": date(2026, 12, 31),
+            "descripcion": "Ruta guiada por mercados y restaurantes. Encocado, arrechón, ceviche y lulada.",
+            "ubicacion": "Mercado Alameda",
+            "destacado": False,
+            "es_recurrente": True,
+            "frecuencia": "semanal",
+            "dias_semana": [6],  # Sábados
+            "icono": "🥘",
+            "tags": ["Gastronomía", "Tour", "Pacífico"]
+        }
+    ]
 
 
 # =====================================================
@@ -378,60 +492,10 @@ EVENTO_COLORS = {
 
 # Tags populares para filtros
 POPULAR_TAGS = [
-    "Salsa", "Cultura", "Música", "Gastronomía",
+    "Salsa", "Cultura", "Música", "Gastronomía", 
     "Gratis", "Familiar", "Nocturno", "Deportes",
     "Arte", "Tradición", "Pacífico", "Festival"
 ]
-
-
-# =====================================================
-# HELPER FUNCTIONS
-# =====================================================
-
-def get_evento_colors() -> Dict[str, str]:
-    """Get color mapping for event types."""
-    return EVENTO_COLORS.copy()
-
-
-def get_popular_tags() -> List[str]:
-    """Get list of popular tags for filtering."""
-    return POPULAR_TAGS.copy()
-
-
-def get_eventos_destacados_predefinidos() -> List[Dict[str, Any]]:
-    """Get predefined highlighted events for Cali."""
-    return [
-        {
-            "nombre": "Feria de Cali 2026",
-            "fecha_inicio": date(2026, 12, 25),
-            "fecha_fin": date(2026, 12, 30),
-            "descripcion": "La feria más importante de Colombia. Salsódromo, cabalgata, conciertos y cultura caleña.",
-            "ubicacion": "Toda la ciudad",
-            "destacado": True,
-            "icono": "🎉",
-            "tags": ["Cultura", "Fiesta", "Salsa"]
-        },
-        {
-            "nombre": "Festival Mundial de Salsa 2026",
-            "fecha_inicio": date(2026, 9, 24),
-            "fecha_fin": date(2026, 9, 28),
-            "descripcion": "El evento de salsa más grande del mundo.",
-            "ubicacion": "Coliseo El Pueblo",
-            "destacado": True,
-            "icono": "🎺",
-            "tags": ["Salsa", "Música", "Competencia"]
-        },
-        {
-            "nombre": "Festival Petronio Álvarez",
-            "fecha_inicio": date(2026, 8, 14),
-            "fecha_fin": date(2026, 8, 19),
-            "descripcion": "Celebración de la música del Pacífico.",
-            "ubicacion": "Unidad Deportiva",
-            "destacado": True,
-            "icono": "🪘",
-            "tags": ["Cultura", "Pacífico", "Música"]
-        }
-    ]
 
 
 # =====================================================
@@ -439,30 +503,41 @@ def get_eventos_destacados_predefinidos() -> List[Dict[str, Any]]:
 # =====================================================
 
 if __name__ == "__main__":
-    print("Evento schemas loaded successfully")
+    print("Evento model loaded successfully")
     print(f"Available frequencies: {EventoFrecuencia.list_values()}")
     
-    # Test event creation
+    # Test example creation
     test_evento = EventoCreate(
         nombre="Feria de Cali 2026",
         descripcion="La feria más salsera del mundo",
         fecha_inicio=date(2026, 12, 25),
         fecha_fin=date(2026, 12, 30),
-        ubicacion="Toda la ciudad"
+        ubicacion="Toda la ciudad",
+        precio="Eventos gratuitos"
     )
     print(f"\nTest evento created: {test_evento.nombre}")
     print(f"Generated slug: {test_evento.slug}")
+    print(f"Date string: {test_evento.get_fecha_str()}")
+    print(f"Is free: {test_evento.es_gratis}")
     
     # Test filters
     filters = EventoFilters(categoria="salsa", destacados=True)
     print(f"\nFilters: {filters.to_dict()}")
     
-    # Test colors
-    print(f"\nEvent colors: {EVENTO_COLORS}")
+    # Test recurring event
+    recurrente = EventoCreate(
+        nombre="Clases de Salsa",
+        descripcion="Clases de salsa todos los sábados",
+        fecha_inicio=date(2026, 1, 1),
+        es_recurrente=True,
+        frecuencia="semanal",
+        dias_semana=[6],
+        ubicacion="La Topa Tolondra"
+    )
+    print(f"\nRecurring event: {recurrente.nombre}")
+    print(f"Days: {recurrente.get_dias_semana_str()}")
     
     # Test predefined events
     print("\nPredefined events:")
     for evento in get_eventos_destacados_predefinidos():
         print(f"  {evento['icono']} {evento['nombre']}")
-    
-    print("\n✅ Evento schemas ready")

@@ -1,0 +1,1823 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>LoCALIzate — Tu Parcero Turístico Inteligente</title>
+    <meta name="description"
+        content="Guía turística inteligente de Cali con filtros por intereses, planificador de rutas optimizado, realidad aumentada y asistente virtual.">
+    <meta name="theme-color" content="#FF6B35">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --cali-naranja: #FF6B35;
+            --cali-naranja-soft: #FF8C61;
+            --cali-naranja-dark: #E55A2B;
+            --cali-amarillo: #F7931E;
+            --cali-dorado: #FFD166;
+            --nature-green: #2ECC71;
+            --nature-green-soft: #58D68D;
+            --nature-dark: #27AE60;
+            --food-wine: #E74C3C;
+            --food-wine-soft: #EC7063;
+            --gray-50: #F8F9FA;
+            --gray-100: #F1F3F5;
+            --gray-200: #E9ECEF;
+            --gray-300: #DEE2E6;
+            --gray-400: #CED4DA;
+            --gray-500: #ADB5BD;
+            --gray-600: #868E96;
+            --gray-700: #495057;
+            --gray-800: #343A40;
+            --gray-900: #212529;
+            --bg-body: linear-gradient(145deg, #FFF8F5 0%, #FFEDE4 100%);
+            --bg-sidebar: rgba(255, 255, 255, 0.98);
+            --bg-card: #FFFFFF;
+            --bg-elevated: #FFFFFF;
+            --bg-input: #F8F9FA;
+            --bg-hover: #FFF5EB;
+            --bg-badge: #FFF0E6;
+            --text-primary: #212529;
+            --text-secondary: #495057;
+            --text-tertiary: #868E96;
+            --text-accent: #FF6B35;
+            --border-color: #E9ECEF;
+            --border-strong: #DEE2E6;
+            --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.10), 0 4px 8px rgba(0, 0, 0, 0.04);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.04);
+            --shadow-glow: 0 0 20px rgba(255, 107, 53, 0.25);
+            --space-1: 4px;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 20px;
+            --space-6: 24px;
+            --space-8: 32px;
+            --space-10: 40px;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-display: 'Poppins', sans-serif;
+            --sidebar-width: 420px;
+            --sidebar-width-mobile: 85vw;
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --bg-body: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+            --bg-sidebar: rgba(23, 23, 35, 0.98);
+            --bg-card: #232336;
+            --bg-elevated: #2a2a42;
+            --bg-input: #1e1e30;
+            --bg-hover: #2d1f1a;
+            --bg-badge: #3d2418;
+            --text-primary: #F8F9FA;
+            --text-secondary: #CED4DA;
+            --text-tertiary: #868E96;
+            --border-color: #343A40;
+            --border-strong: #495057;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        @media (max-width: 768px) {
+            html {
+                font-size: 14px;
+            }
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-body);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+            line-height: 1.5;
+            position: fixed;
+            width: 100%;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray-400);
+            border-radius: 3px;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            backdrop-filter: blur(20px);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+            transition: transform var(--transition-slow);
+            position: relative;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: var(--sidebar-width-mobile);
+                max-width: 380px;
+                transform: translateX(-100%);
+                z-index: 1000;
+                border-right: none;
+                box-shadow: var(--shadow-xl);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+        }
+
+        .sidebar-scroll {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, var(--cali-naranja) 0%, var(--cali-amarillo) 100%);
+            color: white;
+            padding: var(--space-6) var(--space-5);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .brand-title {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .brand-subtitle {
+            font-size: 0.875rem;
+            opacity: 0.92;
+            margin-top: var(--space-1);
+        }
+
+        .user-profile {
+            padding: var(--space-5);
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .profile-row {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-4);
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--cali-naranja), var(--cali-amarillo));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .welcome-text {
+            flex: 1;
+        }
+
+        .welcome-greeting {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        .profile-name {
+            font-family: var(--font-display);
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-accent);
+        }
+
+        .section-label {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            margin-bottom: var(--space-3);
+        }
+
+        .intereses-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-2);
+        }
+
+        .interes-tag {
+            padding: var(--space-2) var(--space-4);
+            background: var(--bg-card);
+            border: 2px solid var(--border-strong);
+            border-radius: var(--radius-full);
+            font-size: 0.8125rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            color: var(--text-secondary);
+            user-select: none;
+        }
+
+        .interes-tag:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .interes-tag.selected {
+            background: var(--cali-naranja);
+            border-color: var(--cali-naranja);
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .interes-tag.selected:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-glow), var(--shadow-md);
+        }
+
+        .tabs {
+            display: flex;
+            background: var(--bg-input);
+            border-bottom: 1px solid var(--border-color);
+            padding: var(--space-2);
+            gap: var(--space-1);
+            flex-shrink: 0;
+        }
+
+        .tab {
+            flex: 1;
+            padding: var(--space-3) var(--space-2);
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.6875rem;
+            color: var(--text-tertiary);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+            background: transparent;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-1);
+            font-family: inherit;
+        }
+
+        .tab i {
+            font-size: 1.1rem;
+            margin-bottom: 2px;
+        }
+
+        .tab.active {
+            background: var(--bg-card);
+            color: var(--cali-naranja);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tab:hover:not(.active) {
+            background: rgba(255, 107, 53, 0.08);
+            color: var(--cali-naranja);
+        }
+
+        .tab-contents {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .tab-content {
+            display: none;
+            height: 100%;
+            overflow-y: auto;
+            padding: var(--space-4);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .lugar-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-3);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            overflow: hidden;
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+        }
+
+        .lugar-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--cali-naranja-soft);
+        }
+
+        .lugar-imagen {
+            width: 90px;
+            min-height: 90px;
+            object-fit: cover;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--cali-naranja), var(--cali-amarillo));
+        }
+
+        .lugar-card-body {
+            padding: var(--space-3);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .lugar-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-1);
+            gap: var(--space-2);
+        }
+
+        .lugar-card-header h4 {
+            font-family: var(--font-display);
+            font-size: 0.9375rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+
+        .rating-stars {
+            color: var(--cali-dorado);
+            font-size: 0.75rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .lugar-card p {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-2);
+            line-height: 1.4;
+        }
+
+        .lugar-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+        }
+
+        .lugar-meta i {
+            color: var(--cali-naranja);
+        }
+
+        .btn-secondary {
+            margin-top: var(--space-2);
+            padding: var(--space-1) var(--space-3);
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all var(--transition-fast);
+            font-family: inherit;
+            align-self: flex-start;
+        }
+
+        .btn-secondary:hover {
+            background: var(--cali-naranja);
+            color: white;
+            border-color: var(--cali-naranja);
+        }
+
+        .btn-secondary.added {
+            background: var(--nature-green);
+            color: white;
+            border-color: var(--nature-green);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--cali-naranja), var(--cali-amarillo));
+            color: white;
+            width: 100%;
+            padding: var(--space-3) var(--space-4);
+            border: none;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 0.9375rem;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow), var(--shadow-lg);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .ruta-planner h3 {
+            font-family: var(--font-display);
+            font-size: 1.125rem;
+            margin-bottom: var(--space-4);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            color: var(--text-primary);
+        }
+
+        .seleccion-lugares {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: var(--space-3);
+            padding-right: var(--space-1);
+        }
+
+        .lugar-checkbox {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3);
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-2);
+            cursor: pointer;
+            border: 2px solid var(--border-color);
+            transition: all var(--transition-fast);
+        }
+
+        .lugar-checkbox:hover {
+            border-color: var(--cali-naranja-soft);
+        }
+
+        .lugar-checkbox.selected {
+            border-color: var(--cali-naranja);
+            background: var(--bg-hover);
+        }
+
+        .lugar-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--cali-naranja);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .lugar-checkbox-info {
+            flex: 1;
+        }
+
+        .lugar-checkbox-info strong {
+            font-size: 0.875rem;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .lugar-checkbox-info small {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+        }
+
+        .contador-seleccion {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: var(--space-3) 0;
+            padding: var(--space-3);
+            background: var(--bg-input);
+            border-radius: var(--radius-lg);
+        }
+
+        .contador-seleccion span {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .contador-pills {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        .pill {
+            width: 28px;
+            height: 28px;
+            border-radius: var(--radius-full);
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transition: all var(--transition-fast);
+        }
+
+        .pill.active {
+            background: var(--cali-naranja);
+            border-color: var(--cali-naranja);
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .ruta-resultados {
+            margin-top: var(--space-4);
+            display: none;
+            animation: slideUp 0.4s ease;
+        }
+
+        .ruta-resultados.active {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ruta-step {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3);
+            background: var(--bg-input);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-2);
+            transition: all var(--transition-fast);
+        }
+
+        .ruta-step:hover {
+            background: var(--bg-hover);
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--cali-naranja), var(--cali-amarillo));
+            color: white;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .step-info {
+            flex: 1;
+        }
+
+        .step-info strong {
+            font-size: 0.9375rem;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .distance-badge {
+            background: rgba(46, 204, 113, 0.12);
+            color: var(--nature-dark);
+            padding: 2px 10px;
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .ruta-total {
+            margin-top: var(--space-3);
+            padding: var(--space-4);
+            background: linear-gradient(135deg, var(--cali-naranja), var(--cali-amarillo));
+            border-radius: var(--radius-lg);
+            text-align: center;
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .ruta-total strong {
+            font-size: 1.125rem;
+            display: block;
+            margin-bottom: var(--space-1);
+        }
+
+        .ruta-total small {
+            opacity: 0.9;
+            font-size: 0.8125rem;
+        }
+
+        .evento-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-3);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: all var(--transition-base);
+        }
+
+        .evento-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .evento-header {
+            padding: var(--space-3) var(--space-4);
+            background: linear-gradient(135deg, var(--cali-naranja-soft), var(--cali-amarillo));
+            color: white;
+        }
+
+        .evento-header h4 {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            margin-bottom: var(--space-1);
+        }
+
+        .evento-header .evento-fecha {
+            font-size: 0.8125rem;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .evento-body {
+            padding: var(--space-3) var(--space-4);
+        }
+
+        .evento-body p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-2);
+        }
+
+        .evento-tags {
+            display: flex;
+            gap: var(--space-2);
+            flex-wrap: wrap;
+        }
+
+        .evento-tag {
+            padding: 2px 10px;
+            background: var(--bg-badge);
+            color: var(--cali-naranja-dark);
+            border-radius: var(--radius-full);
+            font-size: 0.6875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--space-2);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+
+        .message {
+            max-width: 85%;
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-lg);
+            font-size: 0.875rem;
+            line-height: 1.5;
+            animation: messageIn 0.3s ease;
+        }
+
+        @keyframes messageIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--cali-naranja), var(--cali-amarillo));
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.assistant {
+            align-self: flex-start;
+            background: var(--bg-input);
+            color: var(--text-primary);
+            border-bottom-left-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .chat-input-wrapper {
+            padding: var(--space-3);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: var(--space-2);
+            background: var(--bg-sidebar);
+        }
+
+        .chat-input-wrapper input {
+            flex: 1;
+            padding: var(--space-3) var(--space-4);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-full);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color var(--transition-fast);
+        }
+
+        .chat-input-wrapper input:focus {
+            border-color: var(--cali-naranja);
+        }
+
+        .chat-input-wrapper button {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--cali-naranja), var(--cali-amarillo));
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            flex-shrink: 0;
+        }
+
+        .chat-input-wrapper button:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .map-wrapper {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            background: #e5e3df;
+            z-index: 1;
+        }
+
+        .map-controls {
+            position: absolute;
+            bottom: var(--space-5);
+            left: var(--space-5);
+            z-index: 50;
+            display: flex;
+            gap: var(--space-2);
+            flex-wrap: wrap;
+            background: var(--bg-card);
+            padding: var(--space-2);
+            border-radius: var(--radius-full);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .map-control-btn {
+            padding: var(--space-2) var(--space-4);
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all var(--transition-fast);
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .map-control-btn:hover {
+            background: var(--cali-naranja);
+            color: white;
+            border-color: var(--cali-naranja);
+        }
+
+        .location-panel {
+            position: absolute;
+            bottom: var(--space-5);
+            right: var(--space-5);
+            z-index: 50;
+            background: var(--bg-card);
+            padding: var(--space-3) var(--space-5);
+            border-radius: var(--radius-full);
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            color: var(--cali-naranja);
+            font-weight: 700;
+            border: none;
+            font-family: inherit;
+            font-size: 0.875rem;
+            transition: all var(--transition-fast);
+        }
+
+        .location-panel:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: var(--space-4);
+            left: var(--space-4);
+            z-index: 1001;
+            width: 48px;
+            height: 48px;
+            background: var(--bg-card);
+            border-radius: var(--radius-full);
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            cursor: pointer;
+            border: none;
+            box-shadow: var(--shadow-lg);
+            color: var(--text-primary);
+            transition: all var(--transition-fast);
+        }
+
+        .mobile-toggle:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 900px) {
+            .mobile-toggle {
+                display: flex;
+            }
+
+            .map-controls {
+                bottom: var(--space-3);
+                left: var(--space-3);
+            }
+
+            .location-panel {
+                bottom: var(--space-3);
+                right: var(--space-3);
+            }
+        }
+
+        .toast-container {
+            position: fixed;
+            top: var(--space-5);
+            right: var(--space-5);
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+            pointer-events: none;
+        }
+
+        .toast {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--space-3) var(--space-4);
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            pointer-events: all;
+            animation: toastIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-left: 4px solid var(--cali-naranja);
+            max-width: 320px;
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%) scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        .toast i {
+            color: var(--cali-naranja);
+            font-size: 1.25rem;
+        }
+
+        .toast div {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: var(--space-4);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            max-width: 560px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-hero {
+            height: 200px;
+            background: linear-gradient(135deg, var(--cali-naranja), var(--cali-amarillo));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: var(--space-4);
+            right: var(--space-4);
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            border-radius: var(--radius-full);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            z-index: 10;
+        }
+
+        .modal-close:hover {
+            background: rgba(0, 0, 0, 0.7);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: var(--space-6);
+        }
+
+        .modal-body h2 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            margin-bottom: var(--space-3);
+            color: var(--text-primary);
+        }
+
+        .modal-body p {
+            font-size: 0.9375rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-3);
+            line-height: 1.6;
+        }
+
+        .modal-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-3);
+            margin-bottom: var(--space-4);
+        }
+
+        .modal-meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .modal-meta-item i {
+            color: var(--cali-naranja);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: var(--space-3);
+            margin-top: var(--space-4);
+        }
+
+        .modal-actions .btn-primary {
+            flex: 1;
+        }
+
+        .modal-actions .btn-secondary {
+            flex: 1;
+            justify-content: center;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--space-10) var(--space-4);
+            color: var(--text-tertiary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: var(--space-3);
+            color: var(--gray-300);
+        }
+
+        .empty-state h4 {
+            font-family: var(--font-display);
+            margin-bottom: var(--space-2);
+            color: var(--text-secondary);
+        }
+
+        .empty-state p {
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .lugar-card {
+                flex-direction: column;
+            }
+
+            .lugar-imagen {
+                width: 100%;
+                height: 120px;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <base target="_blank">
+</head>
+
+<body>
+    <div class="toast-container" id="toastContainer"></div>
+    <button class="mobile-toggle" id="mobileToggle" aria-label="Abrir menú">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1 class="brand-title"><span>🎭</span> LoCALIzate</h1>
+                <p class="brand-subtitle">Tu parcero caleño — Filtra por tus gustos</p>
+            </div>
+
+            <div class="sidebar-scroll">
+                <div class="user-profile">
+                    <div class="profile-row">
+                        <div class="avatar">🤙</div>
+                        <div class="welcome-text">
+                            <div class="welcome-greeting">¡Qué hubo, mi parcero!</div>
+                            <div class="profile-name">Turista</div>
+                        </div>
+                    </div>
+                    <div class="section-label">¿Qué te gusta?</div>
+                    <div class="intereses-tags" id="interesesTags">
+                        <span class="interes-tag" data-interes="cultura">🎭 Cultura</span>
+                        <span class="interes-tag" data-interes="naturaleza">🌳 Naturaleza</span>
+                        <span class="interes-tag" data-interes="gastronomia">🍽️ Gastronomía</span>
+                        <span class="interes-tag" data-interes="salsa">💃 Salsa</span>
+                        <span class="interes-tag" data-interes="aventura">🧗 Aventura</span>
+                    </div>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab active" data-tab="rutas" onclick="LoCALIzateApp.switchTab('rutas')">
+                        <i class="fas fa-route"></i><span>Plan Ruta</span>
+                    </button>
+                    <button class="tab" data-tab="lugares" onclick="LoCALIzateApp.switchTab('lugares')">
+                        <i class="fas fa-map-marker-alt"></i><span>Lugares</span>
+                    </button>
+                    <button class="tab" data-tab="eventos" onclick="LoCALIzateApp.switchTab('eventos')">
+                        <i class="fas fa-calendar-week"></i><span>Eventos</span>
+                    </button>
+                    <button class="tab" data-tab="chat" onclick="LoCALIzateApp.switchTab('chat')">
+                        <i class="fas fa-comments"></i><span>Asistente</span>
+                    </button>
+                </div>
+
+                <div class="tab-contents">
+                    <div class="tab-content active" id="rutas-content">
+                        <div class="ruta-planner">
+                            <h3><i class="fas fa-map-marked-alt"></i> Planificador Inteligente</h3>
+                            <p style="font-size:0.8125rem;color:var(--text-tertiary);margin-bottom:var(--space-3)">
+                                Selecciona hasta 5 lugares y te optimizo la ruta más corta desde tu ubicación.
+                            </p>
+                            <div class="seleccion-lugares" id="seleccionLugares"></div>
+                            <div class="contador-seleccion">
+                                <span>Seleccionados: <strong id="contadorTexto">0/5</strong></span>
+                                <div class="contador-pills" id="contadorPills"></div>
+                            </div>
+                            <button class="btn-primary" id="btnPlanificarRuta" onclick="LoCALIzateApp.planificarRuta()">
+                                <i class="fas fa-magic"></i> Optimizar mi ruta
+                            </button>
+                            <div id="rutaResultados" class="ruta-resultados"></div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="lugares-content">
+                        <div id="lista-lugares"></div>
+                    </div>
+
+                    <div class="tab-content" id="eventos-content">
+                        <div id="lista-eventos"></div>
+                    </div>
+
+                    <div class="tab-content" id="chat-content">
+                        <div class="chat-container">
+                            <div class="chat-messages" id="chatMessages"></div>
+                            <div class="chat-input-wrapper">
+                                <input type="text" id="chatInput" placeholder="Pregúntame sobre Cali..."
+                                    autocomplete="off">
+                                <button onclick="LoCALIzateApp.enviarMensaje()" aria-label="Enviar mensaje">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="map-wrapper">
+            <div id="map"></div>
+            <div class="map-controls">
+                <button class="map-control-btn" onclick="LoCALIzateApp.limpiarRuta()">
+                    <i class="fas fa-trash"></i> Limpiar
+                </button>
+                <button class="map-control-btn" onclick="LoCALIzateApp.centrarEnCali()">
+                    <i class="fas fa-city"></i> Centro Cali
+                </button>
+                <button class="map-control-btn" onclick="LoCALIzateApp.toggleTheme()">
+                    <i class="fas fa-moon"></i> Tema
+                </button>
+            </div>
+            <button class="location-panel" onclick="LoCALIzateApp.obtenerUbicacion()">
+                <i class="fas fa-location-dot"></i> ¿Dónde estoy?
+            </button>
+        </main>
+    </div>
+
+    <div id="modalOverlay" class="modal-overlay" onclick="if(event.target===this) LoCALIzateApp.cerrarModal()">
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+
+    <script>
+        (function () {
+            'use strict';
+
+            // ==================== CONFIGURACIÓN ====================
+            const API_BASE_URL = 'http://localhost:8000/api/v1';
+
+            // ==================== ESTADO ====================
+            let mapa, marcadores = [], rutaControl = null;
+            let lugaresSeleccionados = [];
+            let rutaOrdenada = [];
+            let ubicacionActual = { lat: 3.4516, lng: -76.5320 };
+            let filtroInteresActivo = null;
+            let sidebarAbierto = false;
+            let temaOscuro = false;
+
+            // ==================== UTILIDADES ====================
+            function $(sel) { return document.querySelector(sel); }
+            function $$(sel) { return document.querySelectorAll(sel); }
+
+            function escapeHtml(text) {
+                if (!text) return '';
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            function toast(msg, tipo) {
+                tipo = tipo || 'info';
+                const container = document.getElementById('toastContainer');
+                const t = document.createElement('div');
+                t.className = 'toast';
+                var iconos = { info: 'fa-info-circle', success: 'fa-check-circle', warning: 'fa-exclamation-triangle', error: 'fa-times-circle' };
+                var colores = { info: '#FF6B35', success: '#2ECC71', warning: '#F7931E', error: '#E74C3C' };
+                t.style.borderLeftColor = colores[tipo] || colores.info;
+                t.innerHTML = '<i class="fas ' + (iconos[tipo] || iconos.info) + '" style="color:' + (colores[tipo] || colores.info) + '"></i><div>' + escapeHtml(msg) + '</div>';
+                container.appendChild(t);
+                setTimeout(function () {
+                    t.style.opacity = '0';
+                    t.style.transform = 'translateX(100%) scale(0.9)';
+                    setTimeout(function () { t.remove(); }, 300);
+                }, 3500);
+            }
+
+            function calcularDistancia(lat1, lng1, lat2, lng2) {
+                var R = 6371;
+                var dLat = (lat2 - lat1) * Math.PI / 180;
+                var dLng = (lng2 - lng1) * Math.PI / 180;
+                var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+                return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            }
+
+            // ==================== MAPA ====================
+            function initMap() {
+                mapa = L.map('map', { zoomControl: false }).setView([ubicacionActual.lat, ubicacionActual.lng], 13);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                    subdomains: 'abcd',
+                    maxZoom: 20
+                }).addTo(mapa);
+                L.control.zoom({ position: 'topright' }).addTo(mapa);
+                cargarMarcadores();
+            }
+
+            async function cargarMarcadores() {
+                marcadores.forEach(function (m) { mapa.removeLayer(m); });
+                marcadores = [];
+
+                try {
+                    let url = `${API_BASE_URL}/lugares/?limit=100`;
+                    if (filtroInteresActivo) {
+                        url += `&interes=${filtroInteresActivo}`;
+                    }
+
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    const lugares = data.results || data.lugares || [];
+
+                    var iconColors = {
+                        cultura: '#FF6B35',
+                        naturaleza: '#2ECC71',
+                        gastronomia: '#E74C3C',
+                        salsa: '#9B59B6',
+                        aventura: '#3498DB'
+                    };
+
+                    lugares.forEach(function (l) {
+                        var color = iconColors[l.interes] || '#FF6B35';
+                        var iconHtml = '<div style="background:' + color + ';width:32px;height:32px;border-radius:50%;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-size:14px;">' + (l.icono || '📍') + '</div>';
+                        var icon = L.divIcon({ html: iconHtml, className: '', iconSize: [32, 32], iconAnchor: [16, 16] });
+                        var marker = L.marker([l.latitud, l.longitud], { icon: icon }).addTo(mapa);
+
+                        var estrellas = '';
+                        for (var s = 0; s < Math.floor(l.rating); s++) estrellas += '★';
+                        for (var s = 0; s < 5 - Math.floor(l.rating); s++) estrellas += '☆';
+
+                        var popupContent = '<div style="min-width:200px;font-family:Inter,sans-serif">' +
+                            '<h3 style="margin:0 0 8px;font-family:Poppins,sans-serif;font-size:1rem">' + (l.icono || '📍') + ' ' + escapeHtml(l.nombre) + '</h3>' +
+                            '<p style="margin:0 0 8px;font-size:0.8rem;color:#666">' + escapeHtml(l.descripcion_corta || l.descripcion || '') + '</p>' +
+                            '<div style="display:flex;align-items:center;gap:4px;margin-bottom:8px;font-size:0.8rem">' +
+                            '<span style="color:#FFD166">' + estrellas + '</span>' +
+                            '<span style="color:#666">' + l.rating + '</span></div>' +
+                            '<button onclick="LoCALIzateApp.toggleSeleccionLugar(' + l.id + ')" style="background:linear-gradient(135deg,#FF6B35,#F7931E);color:white;border:none;padding:6px 12px;border-radius:20px;cursor:pointer;font-weight:600;width:100%;font-family:inherit">' +
+                            (lugaresSeleccionados.includes(l.id) ? '✓ En ruta' : '+ Agregar a ruta') + '</button></div>';
+
+                        marker.bindPopup(popupContent);
+                        marcadores.push(marker);
+                    });
+                } catch (error) {
+                    console.error('Error cargando marcadores:', error);
+                    toast('Error al cargar los lugares', 'error');
+                }
+            }
+
+            function obtenerUbicacion() {
+                if (!navigator.geolocation) {
+                    toast('Tu navegador no soporta geolocalizacion', 'warning');
+                    return;
+                }
+                toast('Obteniendo tu ubicacion...', 'info');
+                navigator.geolocation.getCurrentPosition(
+                    function (pos) {
+                        ubicacionActual = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                        mapa.setView([ubicacionActual.lat, ubicacionActual.lng], 16);
+                        if (window.marcadorUser) mapa.removeLayer(window.marcadorUser);
+                        var userIcon = L.divIcon({
+                            html: '<div style="background:#4285F4;width:16px;height:16px;border-radius:50%;border:3px solid white;box-shadow:0 0 0 3px #4285F4,0 2px 8px rgba(0,0,0,0.3);"></div>',
+                            className: '', iconSize: [16, 16], iconAnchor: [8, 8]
+                        });
+                        window.marcadorUser = L.marker([ubicacionActual.lat, ubicacionActual.lng], { icon: userIcon, zIndexOffset: 1000 }).addTo(mapa);
+                        toast('Ubicacion actualizada! 📍', 'success');
+                    },
+                    function (err) {
+                        console.error(err);
+                        toast('No se pudo obtener tu ubicacion. Usando centro de Cali.', 'warning');
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+                );
+            }
+
+            function centrarEnCali() {
+                mapa.setView([3.4516, -76.5320], 13);
+                toast('Centrado en Cali 🌆', 'info');
+            }
+
+            // ==================== RUTAS ====================
+            function toggleSeleccionLugar(id) {
+                var idx = lugaresSeleccionados.indexOf(id);
+                if (idx === -1) {
+                    if (lugaresSeleccionados.length >= 5) {
+                        toast('Maximo 5 lugares permitidos', 'warning');
+                        return;
+                    }
+                    lugaresSeleccionados.push(id);
+                    toast('Lugar agregado a tu ruta', 'success');
+                } else {
+                    lugaresSeleccionados.splice(idx, 1);
+                    toast('Lugar removido', 'info');
+                }
+                renderSeleccionLugares();
+                renderLugares();
+                cargarMarcadores();
+            }
+
+            async function renderSeleccionLugares() {
+                var container = document.getElementById('seleccionLugares');
+                if (!container) return;
+
+                try {
+                    let url = `${API_BASE_URL}/lugares/?limit=100`;
+                    if (filtroInteresActivo) {
+                        url += `&interes=${filtroInteresActivo}`;
+                    }
+
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    const lugaresFiltrados = data.results || data.lugares || [];
+
+                    if (lugaresFiltrados.length === 0) {
+                        container.innerHTML = '<div class="empty-state"><i class="fas fa-filter"></i><h4>No hay lugares</h4><p>Prueba con otro filtro de intereses</p></div>';
+                    } else {
+                        container.innerHTML = lugaresFiltrados.map(function (l) {
+                            return '<div class="lugar-checkbox ' + (lugaresSeleccionados.includes(l.id) ? 'selected' : '') + '" onclick="LoCALIzateApp.toggleSeleccionLugar(' + l.id + ')">' +
+                                '<input type="checkbox" ' + (lugaresSeleccionados.includes(l.id) ? 'checked' : '') + ' onclick="event.stopPropagation()">' +
+                                '<div class="lugar-checkbox-info"><strong>' + escapeHtml(l.nombre) + '</strong><small>' + escapeHtml(l.direccion || '') + '</small></div>' +
+                                '<div>⭐ ' + l.rating + '</div></div>';
+                        }).join('');
+                    }
+
+                    var pills = document.getElementById('contadorPills');
+                    if (pills) {
+                        var pillsHtml = '';
+                        for (var i = 1; i <= 5; i++) {
+                            pillsHtml += '<div class="pill ' + (i <= lugaresSeleccionados.length ? 'active' : '') + '">' + i + '</div>';
+                        }
+                        pills.innerHTML = pillsHtml;
+                    }
+
+                    var texto = document.getElementById('contadorTexto');
+                    if (texto) texto.textContent = lugaresSeleccionados.length + '/5';
+
+                } catch (error) {
+                    console.error('Error cargando selección:', error);
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h4>Error</h4><p>No se pudieron cargar los lugares</p></div>';
+                }
+            }
+
+            async function renderLugares() {
+                var container = document.getElementById('lista-lugares');
+                if (!container) return;
+
+                try {
+                    let url = `${API_BASE_URL}/lugares/?limit=50`;
+                    if (filtroInteresActivo) {
+                        url += `&interes=${filtroInteresActivo}`;
+                    }
+
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    const lugares = data.results || data.lugares || [];
+
+                    if (lugares.length === 0) {
+                        container.innerHTML = '<div class="empty-state"><i class="fas fa-map-marker-alt"></i><h4>No hay lugares</h4><p>Selecciona un filtro diferente</p></div>';
+                        return;
+                    }
+
+                    container.innerHTML = lugares.map(function (l) {
+                        var estrellas = '';
+                        for (var s = 0; s < Math.floor(l.rating); s++) estrellas += '★';
+                        for (var s = 0; s < 5 - Math.floor(l.rating); s++) estrellas += '☆';
+                        var estaSeleccionado = lugaresSeleccionados.includes(l.id);
+                        return '<div class="lugar-card" onclick="LoCALIzateApp.mostrarDetalleLugar(' + l.id + ')">' +
+                            '<div class="lugar-imagen">' + (l.icono || '📍') + '</div>' +
+                            '<div class="lugar-card-body">' +
+                            '<div class="lugar-card-header"><h4>' + escapeHtml(l.nombre) + '</h4><div class="rating-stars">' + estrellas + '</div></div>' +
+                            '<p>' + escapeHtml(l.descripcion_corta || l.descripcion || '') + '</p>' +
+                            '<div class="lugar-meta"><i class="fas fa-map-marker-alt"></i> ' + escapeHtml(l.direccion || '') + '</div>' +
+                            '<button class="btn-secondary ' + (estaSeleccionado ? 'added' : '') + '" onclick="event.stopPropagation(); LoCALIzateApp.toggleSeleccionLugar(' + l.id + ')">' +
+                            (estaSeleccionado ? '✓ Agregado' : '+ Agregar') + '</button></div></div>';
+                    }).join('');
+                } catch (error) {
+                    console.error('Error renderizando lugares:', error);
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h4>Error</h4><p>No se pudieron cargar los lugares</p></div>';
+                }
+            }
+
+            async function planificarRuta() {
+                if (lugaresSeleccionados.length === 0) {
+                    toast('Selecciona al menos un lugar', 'warning');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/rutas/optimizar`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            lugares_ids: lugaresSeleccionados,
+                            origen_lat: ubicacionActual.lat,
+                            origen_lng: ubicacionActual.lng
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.detail || 'Error al optimizar ruta');
+                    }
+
+                    if (rutaControl) mapa.removeControl(rutaControl);
+
+                    var waypoints = [L.latLng(ubicacionActual.lat, ubicacionActual.lng)];
+                    data.lugares_ordenados.forEach(function (lugar) {
+                        waypoints.push(L.latLng(lugar.lat, lugar.lng));
+                    });
+
+                    rutaControl = L.Routing.control({
+                        waypoints: waypoints,
+                        routeWhileDragging: false,
+                        showAlternatives: false,
+                        lineOptions: { styles: [{ color: '#FF6B35', weight: 6, opacity: 0.8 }] },
+                        router: L.Routing.osrmv1({ serviceUrl: 'https://router.project-osrm.org/route/v1/' }),
+                        fitSelectedRoutes: true,
+                        show: false
+                    }).addTo(mapa);
+
+                    var resultadosHTML = '<h4>✅ Ruta optimizada</h4>';
+                    data.pasos.forEach(function (paso) {
+                        resultadosHTML += '<div class="ruta-step">' +
+                            '<div class="step-number">' + paso.orden + '</div>' +
+                            '<div class="step-info"><strong>' + escapeHtml(paso.nombre) + '</strong><br><span class="distance-badge">📏 ' + paso.distancia_km + ' km • 🕒 ' + paso.tiempo_minutos + ' min</span></div>' +
+                            '<button class="btn-secondary" onclick="LoCALIzateApp.centrarLugar(' + paso.lat + ',' + paso.lng + ')">Ver mapa</button></div>';
+                    });
+                    resultadosHTML += '<div class="ruta-total"><strong>Total: ' + data.distancia_total + ' km | ⏱️ ' + Math.floor(data.tiempo_total_minutos / 60) + 'h ' + (data.tiempo_total_minutos % 60) + 'min</strong><br><small><i class="fas fa-car"></i> Ruta trazada en el mapa</small></div>';
+
+                    var resultadosDiv = document.getElementById('rutaResultados');
+                    resultadosDiv.innerHTML = resultadosHTML;
+                    resultadosDiv.classList.add('active');
+
+                    toast('Ruta optimizada: ' + data.distancia_total + ' km', 'success');
+
+                    setTimeout(function () {
+                        var bounds = L.latLngBounds([ubicacionActual.lat, ubicacionActual.lng]);
+                        data.lugares_ordenados.forEach(function (l) { bounds.extend([l.lat, l.lng]); });
+                        mapa.fitBounds(bounds, { padding: [50, 50] });
+                    }, 500);
+
+                } catch (error) {
+                    console.error('Error planificando ruta:', error);
+                    toast('Error al planificar la ruta: ' + error.message, 'error');
+                }
+            }
+
+            function limpiarRuta() {
+                if (rutaControl) mapa.removeControl(rutaControl);
+                rutaControl = null;
+                rutaOrdenada = [];
+                document.getElementById('rutaResultados').classList.remove('active');
+                toast('Ruta limpiada del mapa', 'info');
+            }
+
+            function centrarLugar(lat, lng) {
+                mapa.setView([lat, lng], 17);
+            }
+
+            async function mostrarDetalleLugar(id) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/lugares/${id}`);
+                    const l = await response.json();
+
+                    if (!response.ok) throw new Error('Lugar no encontrado');
+
+                    var estrellas = '';
+                    for (var s = 0; s < Math.floor(l.rating); s++) estrellas += '★';
+                    for (var s = 0; s < 5 - Math.floor(l.rating); s++) estrellas += '☆';
+                    var estaSeleccionado = lugaresSeleccionados.includes(l.id);
+
+                    document.getElementById('modalContent').innerHTML =
+                        '<div class="modal-hero">' + (l.icono || '📍') +
+                        '<button class="modal-close" onclick="LoCALIzateApp.cerrarModal()">✖</button></div>' +
+                        '<div class="modal-body">' +
+                        '<h2>' + escapeHtml(l.nombre) + '</h2>' +
+                        '<p>' + escapeHtml(l.descripcion || '') + '</p>' +
+                        '<div class="modal-meta">' +
+                        '<div class="modal-meta-item"><i class="fas fa-map-marker-alt"></i> ' + escapeHtml(l.direccion || '') + '</div>' +
+                        '<div class="modal-meta-item"><i class="fas fa-star"></i> ' + l.rating + ' ' + estrellas + '</div>' +
+                        '<div class="modal-meta-item"><i class="fas fa-clock"></i> ' + escapeHtml(l.horario || 'Consultar') + '</div>' +
+                        '<div class="modal-meta-item"><i class="fas fa-tag"></i> ' + escapeHtml(l.precio || 'Consultar') + '</div></div>' +
+                        '<div class="modal-actions">' +
+                        '<button class="btn-primary" onclick="LoCALIzateApp.toggleSeleccionLugar(' + l.id + ');LoCALIzateApp.cerrarModal()">' + (estaSeleccionado ? '✓ En ruta' : '+ Agregar a ruta') + '</button>' +
+                        '<button class="btn-secondary" onclick="LoCALIzateApp.centrarLugar(' + l.latitud + ',' + l.longitud + ');LoCALIzateApp.cerrarModal()">Ver en mapa</button></div></div>';
+                    document.getElementById('modalOverlay').classList.add('active');
+
+                } catch (error) {
+                    console.error('Error cargando detalle:', error);
+                    toast('Error al cargar los detalles del lugar', 'error');
+                }
+            }
+
+            function cerrarModal() { document.getElementById('modalOverlay').classList.remove('active'); }
+
+            // ==================== EVENTOS ====================
+            async function renderEventos() {
+                var container = document.getElementById('lista-eventos');
+                if (!container) return;
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/eventos/?limit=20`);
+                    const data = await response.json();
+                    const eventos = data.results || data.eventos || [];
+
+                    if (eventos.length === 0) {
+                        container.innerHTML = '<div class="empty-state"><i class="fas fa-calendar-alt"></i><h4>No hay eventos</h4><p>Próximamente más eventos</p></div>';
+                        return;
+                    }
+
+                    container.innerHTML = eventos.map(function (e) {
+                        return '<div class="evento-card">' +
+                            '<div class="evento-header"><h4>' + (e.icono || '🎉') + ' ' + escapeHtml(e.nombre) + '</h4><div class="evento-fecha">📅 ' + escapeHtml(e.fecha_inicio || e.fecha || '') + '</div></div>' +
+                            '<div class="evento-body"><p>' + escapeHtml(e.descripcion || '') + '</p><div class="evento-tags">' +
+                            (e.tags || []).map(function (t) { return '<span class="evento-tag">' + escapeHtml(t) + '</span>'; }).join('') +
+                            '</div></div></div>';
+                    }).join('');
+                } catch (error) {
+                    console.error('Error cargando eventos:', error);
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h4>Error</h4><p>No se pudieron cargar los eventos</p></div>';
+                }
+            }
+
+            // ==================== CHAT ====================
+            async function enviarMensaje() {
+                var input = document.getElementById('chatInput');
+                var msg = input.value.trim();
+                if (!msg) return;
+
+                var container = document.getElementById('chatMessages');
+                container.innerHTML += '<div class="message user">🤙 ' + escapeHtml(msg) + '</div>';
+                input.value = '';
+                container.scrollTop = container.scrollHeight;
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/chat/mensaje`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ mensaje: msg })
+                    });
+
+                    const data = await response.json();
+                    const respuesta = data.respuesta || data.message || "Lo siento, no pude procesar tu mensaje.";
+
+                    container.innerHTML += '<div class="message assistant">🎭 ' + escapeHtml(respuesta) + '</div>';
+                    container.scrollTop = container.scrollHeight;
+
+                } catch (error) {
+                    console.error('Error en chat:', error);
+                    container.innerHTML += '<div class="message assistant">🎭 Lo siento, hubo un error al conectar con el asistente. Intenta de nuevo más tarde.</div>';
+                    container.scrollTop = container.scrollHeight;
+                }
+            }
+
+            // ==================== FILTROS Y UI ====================
+            function aplicarFiltro(interes) {
+                if (filtroInteresActivo === interes) filtroInteresActivo = null;
+                else filtroInteresActivo = interes;
+                document.querySelectorAll('.interes-tag').forEach(function (t) {
+                    t.classList.toggle('selected', t.dataset.interes === filtroInteresActivo);
+                });
+                cargarMarcadores();
+                renderLugares();
+                renderSeleccionLugares();
+            }
+
+            function switchTab(tab) {
+                document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('active'); });
+                document.querySelectorAll('.tab-content').forEach(function (c) { c.classList.remove('active'); });
+                document.querySelector('.tab[data-tab="' + tab + '"]').classList.add('active');
+                document.getElementById(tab + '-content').classList.add('active');
+                
+                // Recargar eventos cuando se abre la pestaña
+                if (tab === 'eventos') {
+                    renderEventos();
+                }
+            }
+
+            function toggleSidebar() {
+                sidebarAbierto = !sidebarAbierto;
+                document.getElementById('sidebar').classList.toggle('open', sidebarAbierto);
+            }
+
+            function toggleTheme() {
+                temaOscuro = !temaOscuro;
+                document.documentElement.setAttribute('data-theme', temaOscuro ? 'dark' : 'light');
+                toast(temaOscuro ? 'Modo oscuro activado 🌙' : 'Modo claro activado ☀️', 'info');
+            }
+
+            // ==================== INICIALIZACION ====================
+            document.querySelectorAll('.interes-tag').forEach(function (tag) {
+                tag.addEventListener('click', function () { aplicarFiltro(tag.dataset.interes); });
+            });
+
+            document.getElementById('chatInput').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') enviarMensaje();
+            });
+
+            document.getElementById('mobileToggle').addEventListener('click', toggleSidebar);
+
+            document.getElementById('chatMessages').innerHTML = '<div class="message assistant">🎭 ¡Que hubo! Soy tu parcero turistico. Preguntame por lugares, salsa, rutas o eventos de Cali.</div>';
+
+            initMap();
+            renderLugares();
+            renderSeleccionLugares();
+            renderEventos();
+
+            var pillsHtml = '';
+            for (var i = 1; i <= 5; i++) {
+                pillsHtml += '<div class="pill">' + i + '</div>';
+            }
+            document.getElementById('contadorPills').innerHTML = pillsHtml;
+
+            // ==================== API PUBLICA ====================
+            window.LoCALIzateApp = {
+                toggleSeleccionLugar: toggleSeleccionLugar,
+                planificarRuta: planificarRuta,
+                limpiarRuta: limpiarRuta,
+                centrarLugar: centrarLugar,
+                obtenerUbicacion: obtenerUbicacion,
+                centrarEnCali: centrarEnCali,
+                mostrarDetalleLugar: mostrarDetalleLugar,
+                cerrarModal: cerrarModal,
+                aplicarFiltro: aplicarFiltro,
+                switchTab: switchTab,
+                toggleSidebar: toggleSidebar,
+                toggleTheme: toggleTheme,
+                enviarMensaje: enviarMensaje
+            };
+        })();
+    </script>
+</body>
+
+</html>
