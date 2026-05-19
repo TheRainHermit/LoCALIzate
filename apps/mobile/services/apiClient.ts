@@ -1,45 +1,41 @@
 const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8000/api';
 
-// Mock data para desarrollo
-const MOCK_LUGARES = [
-  {
-    id: '1',
-    nombre: 'Cristo Rey',
-    zona: 'San Antonio',
-    descripcion_corta: 'Monumento emblemático de Cali',
-    imagen: 'https://via.placeholder.com/300x200?text=Cristo+Rey',
-    categoria: 'Cultura',
-    rating: 4.8,
-    resenas_count: 234,
+export const apiClient = {
+  // Lugares
+  async getLugares(limit = 50, filtros?: object) {
+    const params = new URLSearchParams({ limit: String(limit) });
+    return fetch(`${API_URL}/v1/lugares?${params}`).then(r => r.json());
   },
-  {
-    id: '2',
-    nombre: 'San Antonio',
-    zona: 'Centro',
-    descripcion_corta: 'Barrio bohemio y artístico',
-    imagen: 'https://via.placeholder.com/300x200?text=San+Antonio',
-    categoria: 'Gastronomía',
-    rating: 4.6,
-    resenas_count: 189,
+  
+  async getLugarDetail(id: number) {
+    return fetch(`${API_URL}/v1/lugares/${id}`).then(r => r.json());
   },
-];
 
-export async function fetchLugares() {
-  try {
-    const res = await fetch(`${API_URL}/lugares`);
-    return res.json();
-  } catch (error) {
-    console.log('Using mock data');
-    return MOCK_LUGARES;
-  }
-}
+  // Eventos
+  async getEventos(limit = 20) {
+    return fetch(`${API_URL}/v1/eventos?limit=${limit}`).then(r => r.json());
+  },
 
-export async function fetchEventos() {
-  try {
-    const res = await fetch(`${API_URL}/eventos`);
-    return res.json();
-  } catch (error) {
-    console.log('Using mock data');
-    return [];
+  // Rutas
+  async optimizarRuta(lugarIds: number[], coordenada_inicio: { lat: number; lng: number }) {
+    return fetch(`${API_URL}/v1/rutas/optimizar`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lugares: lugarIds, inicio: coordenada_inicio })
+    }).then(r => r.json());
+  },
+
+  // Chat
+  async enviarMensaje(mensaje: string) {
+    return fetch(`${API_URL}/v1/chat/mensaje`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mensaje })
+    }).then(r => r.json());
+  },
+
+  // Gastronomía
+  async getGastronomia() {
+    return fetch(`${API_URL}/v1/gastronomia`).then(r => r.json());
   }
-}
+};
