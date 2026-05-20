@@ -41,7 +41,7 @@ class Settings(BaseSettings):
     # SERVER CONFIGURATION
     # =====================================================
     HOST: str = Field(default="0.0.0.0", description="Host del servidor")
-    PORT: int = Field(default=8000, description="Puerto del servidor")
+    PORT: int = Field(default=5000, description="Puerto del servidor")
     RELOAD: bool = Field(default=True, description="Recarga automática en desarrollo")
     WORKERS: int = Field(default=1, description="Número de workers para producción")
     
@@ -49,7 +49,7 @@ class Settings(BaseSettings):
     # CORS CONFIGURATION
     # =====================================================
     CORS_ORIGINS: List[str] = Field(
-        default=["http://localhost:3000", "http://localhost:8000", "http://127.0.0.1:3000"],
+        default=["http://localhost:5000", "http://localhost:8000", "http://127.0.0.1:5000", "http://127.0.0.1:8000"],
         description="Orígenes permitidos para CORS"
     )
     CORS_METHODS: List[str] = Field(

@@ -57,6 +57,7 @@ venv.bak/
 .tensorflow
 .python-version
 .pypy-version
+.env.example
 
 # IDEs
 .vscode/

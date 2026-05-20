@@ -3,7 +3,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
 import * as Location from 'expo-location';
 import { ThemedView, ThemedText, Card, Button, Colors, Spacing, IconButton } from '@/components/ui';
-import { MapViewComponent } from '@/components/MapView';
+import MapViewComponent from '@/components/MapView';
 import { useLocationStore } from '@/store/locationStore';
 
 interface Step {

@@ -158,7 +158,7 @@ def test_api_endpoints():
     try:
         import httpx
 
-        base_url = "http://localhost:8000"
+        base_url = "http://localhost:5000"
 
         print(f"   🔌 Probando conexión a {base_url}...")
 

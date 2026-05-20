@@ -186,10 +186,9 @@ export default function RouteDetailScreen() {
                 </View>
               </View>
 
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => router.push('/routes/navigate')}>
                 <Button 
                   label={`Ir a ${evento.nombre}`}
-                  onPress={() => router.push('/routes/navigate')}
                   style={{ marginTop: Spacing.md }}
                 />
               </TouchableOpacity>

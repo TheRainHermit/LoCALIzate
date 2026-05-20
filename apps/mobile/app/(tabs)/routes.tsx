@@ -1,67 +1,55 @@
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { ThemedView, ThemedText, Card, Badge, Button, Colors, Spacing } from '@/components/ui';
-
-interface Ruta {
-  id: string;
-  nombre: string;
-  descripcion: string;
-  duracion: string;
-  distancia: number;
-  dificultad: 'fácil' | 'media' | 'difícil';
-  lugares: number;
-}
-
-const RUTAS_EJEMPLO: Ruta[] = [
-  {
-    id: '1',
-    nombre: 'Ruta Histórica Centro',
-    descripcion: 'Descubre la arquitectura colonial y moderna de Cali',
-    duracion: '2 horas',
-    distancia: 3.5,
-    dificultad: 'fácil',
-    lugares: 5,
-  },
-  {
-    id: '2',
-    nombre: 'Sabores Locales',
-    descripcion: 'Gastronomía auténtica caleña: sancochos, empanadas y más',
-    duracion: '3 horas',
-    distancia: 2.1,
-    dificultad: 'media',
-    lugares: 7,
-  },
-];
+import { fetchEventos } from '@/services/apiClient';
+import type { Evento } from '../../../../packages/shared-types';
 
 export default function RoutesScreen() {
-  const [rutas, setRutas] = useState<Ruta[]>(RUTAS_EJEMPLO);
+  const router = useRouter();
+  const [eventos, setEventos] = useState<Evento[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const difficultyColor = (dif: string) => {
-    switch (dif) {
-      case 'fácil':
-        return 'tertiary';
-      case 'media':
-        return 'primary';
-      case 'difícil':
-        return 'error';
-      default:
-        return 'primary';
+  useEffect(() => {
+    loadEventos();
+  }, []);
+
+  const loadEventos = async () => {
+    try {
+      const data = await fetchEventos(10);
+      // Convertir eventos a rutas temáticas
+      setEventos(data);
+    } catch (error) {
+      console.error('Error cargando eventos:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  const getDifficultyColor = (idx: number) => {
+    const colors = ['tertiary', 'primary', 'error'];
+    return colors[idx % colors.length];
+  };
+
+  if (loading) {
+    return (
+      <ThemedView variant="surface" style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </ThemedView>
+    );
+  }
+
   return (
     <ThemedView variant="surface" style={{ flex: 1 }}>
-      {/* Header */}
       <View style={{ paddingHorizontal: Spacing.lg, paddingTop: Spacing.lg }}>
         <ThemedText variant="headlineMD" color="primary">
           🛣️ Rutas Inteligentes
         </ThemedText>
         <ThemedText variant="bodyMD" color="onSurfaceVariant" style={{ marginTop: Spacing.xs }}>
-          Itinerarios personalizados por Cali
+          Itinerarios por eventos y lugares
         </ThemedText>
       </View>
 
-      {/* Rutas List */}
       <ScrollView
         contentContainerStyle={{
           paddingHorizontal: Spacing.lg,
@@ -69,69 +57,76 @@ export default function RoutesScreen() {
           gap: Spacing.md,
         }}
       >
-        {rutas.map(ruta => (
-          <Card key={ruta.id} variant="elevated">
-            <View style={{ gap: Spacing.md }}>
-              {/* Título y dificultad */}
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <View style={{ flex: 1 }}>
-                  <ThemedText variant="titleLG">{ruta.nombre}</ThemedText>
+        {eventos.map((evento, idx) => (
+          <TouchableOpacity
+            key={evento.id}
+            onPress={() => router.push(`/routes/${evento.id}`)}
+            activeOpacity={0.7}
+          >
+            <Card variant="elevated">
+              <View style={{ gap: Spacing.md }}>
+                {/* Header */}
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <View style={{ flex: 1 }}>
+                    <ThemedText variant="titleLG">{evento.nombre}</ThemedText>
+                  </View>
+                  <Badge 
+                    label={['Fácil', 'Media', 'Difícil'][idx % 3]} 
+                    color={getDifficultyColor(idx)} 
+                    size="sm" 
+                  />
                 </View>
-                <Badge label={ruta.dificultad} color={difficultyColor(ruta.dificultad)} size="sm" />
+
+                {/* Descripción */}
+                <ThemedText variant="bodySM" color="onSurfaceVariant" numberOfLines={2}>
+                  {evento.descripcion}
+                </ThemedText>
+
+                {/* Metadata */}
+                <View style={{ gap: Spacing.sm }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
+                    <ThemedText style={{ fontSize: 14 }}>📅</ThemedText>
+                    <ThemedText variant="labelSM">
+                      {new Date(evento.fecha_inicio).toLocaleDateString()}
+                    </ThemedText>
+                  </View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
+                    <ThemedText style={{ fontSize: 14 }}>📍</ThemedText>
+                    <ThemedText variant="labelSM">{evento.direccion}</ThemedText>
+                  </View>
+                </View>
+
+                {/* Stats */}
+                <View style={{ flexDirection: 'row', gap: Spacing.lg, paddingTop: Spacing.md, borderTopWidth: 1, borderTopColor: Colors.outline }}>
+                  <View>
+                    <ThemedText variant="labelSM" color="onSurfaceVariant">
+                      Distancia
+                    </ThemedText>
+                    <ThemedText variant="titleMD" color="primary">
+                      2.5 km
+                    </ThemedText>
+                  </View>
+                  <View>
+                    <ThemedText variant="labelSM" color="onSurfaceVariant">
+                      Duración
+                    </ThemedText>
+                    <ThemedText variant="titleMD" color="primary">
+                      2h 30m
+                    </ThemedText>
+                  </View>
+                </View>
               </View>
-
-              {/* Descripción */}
-              <ThemedText variant="bodyMD" color="onSurfaceVariant">
-                {ruta.descripcion}
-              </ThemedText>
-
-              {/* Stats */}
-              <View
-                style={{
-                  flexDirection: 'row',
-                  gap: Spacing.lg,
-                  paddingTop: Spacing.md,
-                  borderTopWidth: 1,
-                  borderTopColor: Colors.outlineVariant,
-                }}
-              >
-                <View style={{ flex: 1 }}>
-                  <ThemedText variant="labelSM" color="onSurfaceVariant">
-                    ⏱️ Duración
-                  </ThemedText>
-                  <ThemedText variant="bodyMD" color="onSurface">
-                    {ruta.duracion}
-                  </ThemedText>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <ThemedText variant="labelSM" color="onSurfaceVariant">
-                    📏 Distancia
-                  </ThemedText>
-                  <ThemedText variant="bodyMD" color="onSurface">
-                    {ruta.distancia}km
-                  </ThemedText>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <ThemedText variant="labelSM" color="onSurfaceVariant">
-                    📍 Lugares
-                  </ThemedText>
-                  <ThemedText variant="bodyMD" color="onSurface">
-                    {ruta.lugares}
-                  </ThemedText>
-                </View>
-              </View>
-
-              {/* CTA Button */}
-              <Button
-                label="Iniciar Ruta"
-                variant="filled"
-                size="md"
-                onPress={() => {}}
-                style={{ marginTop: Spacing.md }}
-              />
-            </View>
-          </Card>
+            </Card>
+          </TouchableOpacity>
         ))}
+
+        {eventos.length === 0 && (
+          <Card variant="outlined" style={{ alignItems: 'center', padding: Spacing.lg }}>
+            <ThemedText variant="bodyMD" color="onSurfaceVariant">
+              No hay rutas disponibles
+            </ThemedText>
+          </Card>
+        )}
       </ScrollView>
     </ThemedView>
   );

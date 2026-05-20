@@ -257,7 +257,7 @@ __all__ = [
 if __name__ == "__main__":
     """
     Run the application directly (for development).
-    For production, use: uvicorn app:app --host 0.0.0.0 --port 8000
+    For production, use: uvicorn app:app --host 0.0.0.0 --port 5000
     """
     import uvicorn
     
