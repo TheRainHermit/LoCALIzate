@@ -408,4 +408,9 @@ export const apiClient = {
   }),
 };
 
+export const getBackendBaseUrl = (): string => {
+  const apiUrl = getApiUrl();
+  return apiUrl.replace('/api/v1', '');
+};
+
 export default apiClient;

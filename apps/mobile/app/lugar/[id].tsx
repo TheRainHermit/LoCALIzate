@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { ThemedView, ThemedText, Card, Badge, Button, Colors, Spacing, Typography } from '@/components/ui';
 import { fetchLugarDetail, fetchLugarResenas } from '@/services/apiClient';
 import type { Lugar } from '../../../../packages/shared-types';
+import LuluFloatingChat from '@/components/LuluFloatingChat';
 
 const { width } = Dimensions.get('window');
 
@@ -14,6 +15,7 @@ export default function LugarDetailScreen() {
   const [resenas, setResenas] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [showLuluChat, setShowLuluChat] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -244,6 +246,31 @@ export default function LugarDetailScreen() {
           </View>
         </View>
       </ScrollView>
+
+      {/* Botón flotante para Lulú */}
+      <TouchableOpacity
+        onPress={() => setShowLuluChat(true)}
+        style={{
+          position: 'absolute',
+          bottom: 20,
+          right: 20,
+          width: 60,
+          height: 60,
+          borderRadius: 30,
+          backgroundColor: Colors.primary,
+          justifyContent: 'center',
+          alignItems: 'center',
+          elevation: 5,
+        }}
+      >
+        <ThemedText style={{ fontSize: 28 }}>💬</ThemedText>
+      </TouchableOpacity>
+
+      <LuluFloatingChat
+        contextPlace={lugar?.nombre}
+        visible={showLuluChat}
+        onClose={() => setShowLuluChat(false)}
+      />
     </ThemedView>
   );
 }

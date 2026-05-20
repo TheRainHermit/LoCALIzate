@@ -145,19 +145,31 @@ app.post('/chat', async (req, res) => {
 app.post('/speak', async (req, res) => {
   const { text } = req.body;
 
+  console.log('🎙️ [/speak] Texto recibido:', text?.substring(0, 50) + '...');
+  console.log('🔑 Inworld API Key:', process.env.INWORLD_API_KEY ? '✅ Configurada' : '❌ NO configurada');
+  console.log('🔑 Inworld Voice ID:', process.env.INWORLD_VOICE_ID ? '✅ Configurada' : '❌ NO configurada');
+
   if (!text) {
+    console.error('❌ No se recibió texto');
     return res.status(400).json({ error: 'No se recibió texto' });
   }
 
-  const textoLimpio = limpiarTexto(text);
-  const oraciones = dividirEnOraciones(textoLimpio);
-  console.log('Oraciones a sintetizar:', oraciones);
+  if (!process.env.INWORLD_API_KEY) {
+    console.error('❌ INWORLD_API_KEY no configurada');
+    return res.status(500).json({ error: 'INWORLD_API_KEY no configurada' });
+  }
 
   try {
+    const textoLimpio = limpiarTexto(text);
+    const oraciones = dividirEnOraciones(textoLimpio);
+    console.log('📝 Oraciones a sintetizar:', oraciones.length);
+
     const todosLosChunks = [];
 
     for (const oracion of oraciones) {
       if (!oracion.trim()) continue;
+
+      console.log('🔊 Sintetizando:', oracion.substring(0, 30) + '...');
 
       const response = await fetch('https://api.inworld.ai/tts/v1/voice:stream', {
         method: 'POST',
@@ -178,9 +190,11 @@ app.post('/speak', async (req, res) => {
         })
       });
 
+      console.log('📊 Respuesta Inworld:', response.status);
+
       if (!response.ok) {
         const err = await response.text();
-        console.error(`Error en oracion "${oracion}":`, err);
+        console.error(`❌ Error Inworld (${response.status}):`, err);
         continue;
       }
 
@@ -211,15 +225,18 @@ app.post('/speak', async (req, res) => {
       }
     }
 
-    if (todosLosChunks.length === 0) throw new Error('No se encontró audio');
+    if (todosLosChunks.length === 0) {
+      console.error('❌ No se generó audio');
+      throw new Error('No se encontró audio');
+    }
 
     const audioBuffer = Buffer.concat(todosLosChunks);
-    console.log(`Audio total generado: ${audioBuffer.length} bytes`);
+    console.log('✅ Audio total:', audioBuffer.length, 'bytes');
     res.set('Content-Type', 'audio/mpeg');
     res.send(audioBuffer);
 
   } catch (error) {
-    console.error('Error Inworld TTS:', error.message);
+    console.error('❌ Error /speak:', error.message);
     res.status(500).json({ error: error.message });
   }
 });

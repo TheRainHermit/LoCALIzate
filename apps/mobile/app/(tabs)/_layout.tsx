@@ -1,6 +1,7 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
+import LuluAudioAssistant from '@/components/LuluAudioAssistant';
 
 const TAB_ICONS = {
   explorer: '🗺️',
@@ -53,6 +54,16 @@ export default function TabLayout() {
           tabBarLabel: 'Perfil',
         }}
       />
+      <Tabs.Screen
+        name="lulu"
+        options={{
+          title: 'Lulú',
+          tabBarLabel: 'Lulú',
+        }}
+      />
     </Tabs>
   );
 }
+
+{/* Audio Assistant permanente */}
+<LuluAudioAssistant position="bottom-right" />

@@ -3,6 +3,7 @@ import { View, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors, Spacing } from '@/constants';
 import { ThemedText, ThemedView } from '@/components/ui';
+import { useLanguageStore } from '@/store/languageStore';
 
 interface Language {
   code: string;
@@ -19,10 +20,12 @@ export default function IdiomaScreen() {
   const router = useRouter();
   const [selectedLanguage, setSelectedLanguage] = useState<string>('es');
 
-  const handleContinue = async () => {
-    // TODO: Guardar idioma en AsyncStorage o Zustand store
+  const { setLanguage } = useLanguageStore();  // ✅ Al nivel del componente
+
+  const handleContinue = () => {
+    setLanguage(selectedLanguage);
     console.log(`Idioma: ${selectedLanguage}`);
-    router.push('/onboarding/welcome');
+    router.push('/onboarding/welcome');  // ✅ En lugar de /onboarding/lulu
   };
 
   return (
