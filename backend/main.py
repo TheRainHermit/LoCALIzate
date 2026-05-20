@@ -175,7 +175,8 @@ async def root():
             "ar": f"{settings.API_PREFIX}/ar/cercanos",
             "usuarios": f"{settings.API_PREFIX}/usuarios/perfil",
             "analytics": f"{settings.API_PREFIX}/analytics/globales",
-            "websocket": "/ws/{client_id}"
+            "websocket": "/ws/{client_id}",
+            "vision": f"{settings.API_PREFIX}/vision/detect"
         },
         "health": "/health"
     }

@@ -11,6 +11,8 @@ export default function OnboardingLayout() {
         },
       }}
     >
+      <Stack.Screen name="splash" options={{ animationEnabled: false }} />
+      <Stack.Screen name="idioma" options={{ animationEnabled: true }} />
       <Stack.Screen name="welcome" />
       <Stack.Screen name="interests" />
       <Stack.Screen name="permissions" />

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, ActivityIndicator, Alert, TouchableOpacity, Text, ScrollView, FlatList } from 'react-native';
+import { View, ActivityIndicator, Alert, TouchableOpacity, Text } from 'react-native';
 import * as Location from 'expo-location';
-import { Colors, Spacing } from '@/constants';
+import { Colors } from '@/constants';
 import { fetchLugares } from '@/services/apiClient';
+import { openDirectionsInMaps } from '@/services/mapLinkService';
+import LeafletMapView from './LeafletMapView';
 import type { Lugar } from '../../../packages/shared-types';
 
 interface MapViewProps {
@@ -25,11 +27,8 @@ const categoryColors = {
   default: '#95A5A6',
 };
 
-const CALI_CENTER = { lat: 3.4516, lng: -76.532 };
-
-// Calcular distancia simple entre dos puntos
 const calcDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
-  const R = 6371; // Radio de la tierra en km
+  const R = 6371;
   const dLat = (lat2 - lat1) * (Math.PI / 180);
   const dLng = (lng2 - lng1) * (Math.PI / 180);
   const a =
@@ -49,6 +48,8 @@ export default function MapViewComponent({
   const [allLocations, setAllLocations] = useState<Lugar[]>(locations);
   const [loading, setLoading] = useState(!locations.length);
   const [userPos, setUserPos] = useState(userLocation);
+  const [selectedLocation, setSelectedLocation] = useState<Lugar | null>(null);
+  const [routeLocations, setRouteLocations] = useState<Lugar[]>([]);
 
   useEffect(() => {
     if (!locations.length) {
@@ -100,6 +101,23 @@ export default function MapViewComponent({
     return categoryColors.default;
   };
 
+  const handleViewRoute = async (location: Lugar) => {
+    if (!userPos) {
+      Alert.alert('Error', 'No se pudo obtener tu ubicación');
+      return;
+    }
+
+    try {
+      await openDirectionsInMaps(
+        { name: 'Tu ubicación', lat: userPos.lat, lng: userPos.lng },
+        { name: location.nombre, lat: location.lat, lng: location.lng }
+      );
+    } catch (error) {
+      console.error('Error opening maps:', error);
+      Alert.alert('Error', 'No se pudo abrir el mapa');
+    }
+  };
+
   const sortedLocations = userPos
     ? [...allLocations].sort((a, b) => {
         const distA = calcDistance(userPos.lat, userPos.lng, a.lat, a.lng);
@@ -126,131 +144,60 @@ export default function MapViewComponent({
 
   return (
     <View style={{ backgroundColor: Colors.surfaceContainerLow, borderRadius: 16, overflow: 'hidden' }}>
-      {/* Resumen Visual del Mapa */}
-      <View
-        style={{
-          height: 200,
-          backgroundColor: Colors.primary,
-          justifyContent: 'center',
-          alignItems: 'center',
-          position: 'relative',
+      {/* Mapa Leaflet interactivo con WebView */}
+      <LeafletMapView
+        locations={allLocations}
+        userLocation={userPos}
+        onLocationPress={(location) => {
+          setSelectedLocation(location);
+          onMarkerPress?.(location);
         }}
-      >
-        <Text style={{ fontSize: 48, marginBottom: 8 }}>🗺️</Text>
-        <Text style={{ color: 'white', fontSize: 14, fontWeight: '600' }}>
-          {allLocations.length} lugares en Cali
-        </Text>
-        {userPos && (
-          <Text style={{ color: 'rgba(255,255,255,0.8)', fontSize: 12, marginTop: 4 }}>
-            📍 Tu ubicación detectada
-          </Text>
-        )}
+        onRouteSelected={(locations) => {
+          setRouteLocations(locations);
+        }}
+        height={280}
+      />
 
-        {/* Botones flotantes */}
-        <View
-          style={{
-            position: 'absolute',
-            bottom: 12,
-            flexDirection: 'row',
-            gap: 8,
-            paddingHorizontal: 12,
-          }}
-        >
+      {/* Info del lugar seleccionado + botón de ruta */}
+      {selectedLocation && (
+        <View style={{ padding: 12, backgroundColor: Colors.surface }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: Colors.onSurface }}>
+                {selectedLocation.nombre}
+              </Text>
+              <Text style={{ fontSize: 12, color: Colors.onSurfaceVariant, marginTop: 4 }}>
+                {selectedLocation.zona || selectedLocation.direccion || 'Cali'}
+              </Text>
+            </View>
+            <Text style={{ fontSize: 12 }}>⭐ {selectedLocation.rating_promedio || 4.5}</Text>
+          </View>
+
           <TouchableOpacity
+            onPress={() => handleViewRoute(selectedLocation)}
             style={{
-              paddingVertical: 8,
+              paddingVertical: 10,
               paddingHorizontal: 12,
-              backgroundColor: 'rgba(255,255,255,0.2)',
-              borderRadius: 20,
-              borderWidth: 1,
-              borderColor: 'rgba(255,255,255,0.4)',
+              backgroundColor: Colors.primary,
+              borderRadius: 8,
+              alignItems: 'center',
             }}
           >
-            <Text style={{ color: 'white', fontSize: 11, fontWeight: '600' }}>🏙️ Centro</Text>
+            <Text style={{ color: 'white', fontSize: 13, fontWeight: '600' }}>
+              🗺️ Ver ruta en Google Maps
+            </Text>
           </TouchableOpacity>
-
-          {userPos && (
-            <TouchableOpacity
-              style={{
-                paddingVertical: 8,
-                paddingHorizontal: 12,
-                backgroundColor: 'rgba(255,255,255,0.2)',
-                borderRadius: 20,
-                borderWidth: 1,
-                borderColor: 'rgba(255,255,255,0.4)',
-              }}
-            >
-              <Text style={{ color: 'white', fontSize: 11, fontWeight: '600' }}>📍 Mi ubicación</Text>
-            </TouchableOpacity>
-          )}
         </View>
-      </View>
+      )}
 
-      {/* Lista de Lugares */}
-      <View style={{ paddingHorizontal: 12, paddingVertical: 12 }}>
-        <Text style={{ fontSize: 12, fontWeight: '700', color: Colors.onSurface, marginBottom: 8 }}>
-          Lugares cercanos a ti
-        </Text>
-
-        {sortedLocations.slice(0, 5).map((lugar) => {
-          const distance = userPos ? calcDistance(userPos.lat, userPos.lng, lugar.lat, lugar.lng) : null;
-
-          return (
-            <TouchableOpacity
-              key={lugar.id}
-              onPress={() => onMarkerPress?.(lugar)}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingVertical: 10,
-                paddingHorizontal: 10,
-                marginBottom: 8,
-                backgroundColor: Colors.surface,
-                borderRadius: 12,
-                borderLeftWidth: 4,
-                borderLeftColor: getCategoryColor(lugar),
-              }}
-            >
-              {/* Color indicator */}
-              <View
-                style={{
-                  width: 12,
-                  height: 12,
-                  borderRadius: 6,
-                  backgroundColor: getCategoryColor(lugar),
-                  marginRight: 10,
-                }}
-              />
-
-              {/* Info */}
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 13, fontWeight: '600', color: Colors.onSurface }}>
-                  {lugar.nombre}
-                </Text>
-                <Text style={{ fontSize: 11, color: Colors.onSurfaceVariant, marginTop: 2 }}>
-                  {lugar.zona || lugar.direccion || 'Cali'}
-                </Text>
-              </View>
-
-              {/* Distancia */}
-              {distance !== null && (
-                <Text style={{ fontSize: 11, fontWeight: '600', color: Colors.primary, marginLeft: 8 }}>
-                  {distance < 1 ? `${(distance * 1000).toFixed(0)}m` : `${distance.toFixed(1)}km`}
-                </Text>
-              )}
-
-              {/* Rating */}
-              <Text style={{ fontSize: 12, marginLeft: 8 }}>⭐ {lugar.rating_promedio || 4.5}</Text>
-            </TouchableOpacity>
-          );
-        })}
-
-        {sortedLocations.length > 5 && (
-          <Text style={{ fontSize: 11, color: Colors.onSurfaceVariant, textAlign: 'center', marginTop: 8 }}>
-            +{sortedLocations.length - 5} lugares más
+      {/* Info de ruta seleccionada */}
+      {routeLocations.length > 0 && (
+        <View style={{ paddingHorizontal: 12, paddingVertical: 8, backgroundColor: Colors.primaryContainer }}>
+          <Text style={{ fontSize: 11, fontWeight: '600', color: Colors.primary }}>
+            Ruta: {routeLocations.length} lugar{routeLocations.length > 1 ? 'es' : ''} seleccionado{routeLocations.length > 1 ? 's' : ''}
           </Text>
-        )}
-      </View>
+        </View>
+      )}
     </View>
   );
 }

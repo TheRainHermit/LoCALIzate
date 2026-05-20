@@ -1,9 +1,12 @@
 export const Colors = {
-  primary: '#7e5700',
-  secondary: '#bb0020',
-  tertiary: '#2c694e',
-  surface: '#fff8f3',
-  'surface-container': '#faecdb',
-  'on-surface': '#211b11',
-  'on-surface-variant': '#514532',
+  primary: '#76C62D',      // Verde
+  secondary: '#FF8C00',    // Naranja
+  tertiary: '#6B3E92',     // Morado
+  surface: '#F5F5F0',      // Crema
+  'surface-container': '#D4E8BC',  // Verde claro
+  'on-surface': '#1a1a1a',
+  'on-surface-variant': '#555555',
+  background: '#F5F5F0',
+  error: '#B3261E',
+  accent: '#FF8C00',
 };

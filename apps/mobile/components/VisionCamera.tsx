@@ -15,7 +15,6 @@ export default function VisionCamera({ isVisible, onClose, onDetected }: VisionC
   const cameraRef = useRef<CameraView>(null);
   const [permission, requestPermission] = useCameraPermissions();
   const [isCapturing, setIsCapturing] = useState(false);
-  const [result, setResult] = useState<VisionResult | null>(null);
 
   useEffect(() => {
     if (isVisible && !permission?.granted) {
@@ -32,10 +31,14 @@ export default function VisionCamera({ isVisible, onClose, onDetected }: VisionC
 
       console.log('📸 Foto capturada:', photo.uri);
 
-      // Detectar monumento (detectMonument ahora usa FormData)
+      // Detectar monumento
       const detectionResult = await detectMonument(photo.uri);
-      setResult(detectionResult);
       onDetected?.(detectionResult);
+
+      // Cerrar cámara después de detectar
+      setTimeout(() => {
+        onClose();
+      }, 500);
     } catch (error) {
       console.error('Error capturando foto:', error);
       Alert.alert('Error', 'No se pudo capturar la foto');
